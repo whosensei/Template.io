@@ -73,6 +73,10 @@ export class TemplateService {
       try {
         const db = await getDbAsync() // Use async version for better performance
         
+        if (!db) {
+          throw new Error('Database connection failed')
+        }
+        
         // Optimized query with explicit field selection and user filtering
         // During migration, also include templates with null userId (legacy templates)
         const result = await db
@@ -95,6 +99,7 @@ export class TemplateService {
         // Convert timestamps to ISO strings
         const formattedResult = result.map(template => ({
           ...template,
+          variables: template.variables as Record<string, string>,
           createdAt: template.createdAt.toISOString(),
           updatedAt: template.updatedAt.toISOString(),
         }))
@@ -114,6 +119,10 @@ export class TemplateService {
     const startTime = Date.now()
     try {
       const db = await getDbAsync()
+      
+      if (!db) {
+        throw new Error('Database connection failed')
+      }
       
       // Optimized single query with explicit fields and user filtering
       const result = await db
@@ -138,6 +147,7 @@ export class TemplateService {
       // Convert timestamps to ISO strings
       const template = {
         ...result[0],
+        variables: result[0].variables as Record<string, string>,
         createdAt: result[0].createdAt.toISOString(),
         updatedAt: result[0].updatedAt.toISOString(),
       }
@@ -162,6 +172,10 @@ export class TemplateService {
     try {
       const db = await getDbAsync()
       
+      if (!db) {
+        throw new Error('Database connection failed')
+      }
+      
       // Validate userId is provided
       if (!data.userId) {
         throw new Error('User ID is required')
@@ -185,6 +199,7 @@ export class TemplateService {
       // Convert timestamps to ISO strings
       const createdTemplate = {
         ...result[0],
+        variables: result[0].variables as Record<string, string>,
         createdAt: result[0].createdAt.toISOString(),
         updatedAt: result[0].updatedAt.toISOString(),
       }
@@ -214,6 +229,10 @@ export class TemplateService {
       try {
         const db = await getDbAsync()
         
+        if (!db) {
+          throw new Error('Database connection failed')
+        }
+        
         // Prepare update data with proper timestamp handling
         const updateData: any = {
           ...data,
@@ -234,6 +253,7 @@ export class TemplateService {
         // Convert timestamps to ISO strings
         const updatedTemplate = {
           ...result[0],
+          variables: result[0].variables as Record<string, string>,
           createdAt: result[0].createdAt.toISOString(),
           updatedAt: result[0].updatedAt.toISOString(),
         }
@@ -255,6 +275,10 @@ export class TemplateService {
     return retryOperation(async () => {
       try {
         const db = await getDbAsync()
+        
+        if (!db) {
+          throw new Error('Database connection failed')
+        }
         
         // Optimized delete with returning to check if anything was deleted and user filtering
         const result = await db
@@ -294,6 +318,10 @@ export class TemplateService {
       try {
         const db = await getDbAsync()
         
+        if (!db) {
+          throw new Error('Database connection failed')
+        }
+        
         // Optimized name search with user filtering
         const result = await db
           .select({
@@ -317,6 +345,7 @@ export class TemplateService {
         // Convert timestamps to ISO strings
         const template = {
           ...result[0],
+          variables: result[0].variables as Record<string, string>,
           createdAt: result[0].createdAt.toISOString(),
           updatedAt: result[0].updatedAt.toISOString(),
         }
@@ -337,6 +366,10 @@ export class TemplateService {
     try {
       const db = await getDbAsync()
       
+      if (!db) {
+        throw new Error('Database connection failed')
+      }
+      
       // Optimized count query
       const result = await db
         .select({ count: templates.id })
@@ -352,7 +385,7 @@ export class TemplateService {
   }
 
   // Batch operations for better performance
-  static async createMultipleTemplates(templatesData: Array<{
+  static async createMultipleTemplates(userId: string, templatesData: Array<{
     name: string
     content: string
     variables: Record<string, string>
@@ -361,8 +394,13 @@ export class TemplateService {
     try {
       const db = await getDbAsync()
       
+      if (!db) {
+        throw new Error('Database connection failed')
+      }
+      
       // Prepare batch data (let database handle timestamps)
       const batchData = templatesData.map(data => ({
+        userId: userId,
         name: data.name,
         content: data.content,
         variables: data.variables,
@@ -374,6 +412,7 @@ export class TemplateService {
       // Convert timestamps to ISO strings
       const createdTemplates = result.map(template => ({
         ...template,
+        variables: template.variables as Record<string, string>,
         createdAt: template.createdAt.toISOString(),
         updatedAt: template.updatedAt.toISOString(),
       }))
@@ -392,6 +431,11 @@ export class TemplateService {
     const startTime = Date.now()
     try {
       const db = await getDbAsync()
+      
+      if (!db) {
+        throw new Error('Database connection failed')
+      }
+      
       await db.select({ check: templates.id }).from(templates).limit(1)
       
       logDbOperation('healthCheck', startTime)

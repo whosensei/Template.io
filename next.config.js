@@ -5,10 +5,13 @@ const nextConfig = {
   },
   images: { unoptimized: true },
   
+  // External packages for server components (moved out of experimental)
+  serverExternalPackages: [
+    '@neondatabase/serverless'
+  ],
+  
   // Performance optimizations (stable features only)
   experimental: {
-    // Optimize server components
-    serverComponentsExternalPackages: ['@neondatabase/serverless'],
     // Reduce bundle size
     optimizePackageImports: ['lucide-react', '@radix-ui/react-icons'],
   },
@@ -64,31 +67,11 @@ const nextConfig = {
   
   // Webpack optimizations
   webpack: (config, { buildId, dev, isServer }) => {
-    // Production optimizations
-    if (!dev) {
-      config.optimization.splitChunks = {
-        chunks: 'all',
-        cacheGroups: {
-          vendor: {
-            test: /[\\/]node_modules[\\/]/,
-            name: 'vendors',
-            chunks: 'all',
-          },
-          common: {
-            name: 'common',
-            minChunks: 2,
-            chunks: 'all',
-            enforce: true,
-          },
-        },
-      }
-    }
-    
     return config
   },
   
   // Build-time optimizations
-  swcMinify: true,
+  // swcMinify is now enabled by default in Next.js 15
   
   // Runtime optimizations
   poweredByHeader: false,

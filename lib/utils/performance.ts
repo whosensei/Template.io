@@ -209,7 +209,8 @@ export function timeDbOperation<T>(
   fn: () => Promise<T>,
   metadata?: Record<string, any>
 ): Promise<T> {
-  return timeOperation(`DB: ${operation}`, fn, metadata)
+  const result = timeOperation(`DB: ${operation}`, fn, metadata)
+  return Promise.resolve(result)
 }
 
 // API operation wrapper
@@ -218,7 +219,8 @@ export function timeApiOperation<T>(
   fn: () => Promise<T>,
   metadata?: Record<string, any>
 ): Promise<T> {
-  return timeOperation(`API: ${operation}`, fn, metadata)
+  const result = timeOperation(`API: ${operation}`, fn, metadata)
+  return Promise.resolve(result)
 }
 
 // Client operation wrapper
