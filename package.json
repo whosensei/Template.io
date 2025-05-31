@@ -13,6 +13,7 @@
     "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
+    "@clerk/nextjs": "^6.20.2",
     "@hookform/resolvers": "^3.9.0",
     "@neondatabase/serverless": "^1.0.0",
     "@next/swc-wasm-nodejs": "13.5.1",

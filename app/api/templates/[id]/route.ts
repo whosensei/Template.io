@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { auth } from '@clerk/nextjs/server'
 import { TemplateService } from '@/lib/db/templates'
 
 // Performance monitoring
@@ -16,9 +17,18 @@ export async function GET(
   const startTime = Date.now()
   
   try {
+    const { userId } = await auth()
+    
+    if (!userId) {
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      )
+    }
+
     const { id } = await params
     
-    const template = await TemplateService.getTemplateById(id)
+    const template = await TemplateService.getTemplateById(id, userId)
     
     if (!template) {
       logPerformance('GET /api/templates/[id] (not found)', startTime)
@@ -56,11 +66,20 @@ export async function PUT(
   const startTime = Date.now()
   
   try {
+    const { userId } = await auth()
+    
+    if (!userId) {
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      )
+    }
+
     const { id } = await params
     const body = await request.json()
     const { name, content, variables } = body
 
-    const updatedTemplate = await TemplateService.updateTemplate(id, {
+    const updatedTemplate = await TemplateService.updateTemplate(id, userId, {
       name,
       content,
       variables
@@ -94,6 +113,15 @@ export async function DELETE(
   const startTime = Date.now()
   
   try {
+    const { userId } = await auth()
+    
+    if (!userId) {
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      )
+    }
+
     const { id } = await params
     
     // Validate ID format (basic check)
@@ -107,7 +135,7 @@ export async function DELETE(
     // Perform deletion directly - no need to check existence first
     // The delete operation will handle non-existent templates gracefully
     try {
-      await TemplateService.deleteTemplate(id)
+      await TemplateService.deleteTemplate(id, userId)
       
       logPerformance('DELETE /api/templates/[id]', startTime)
       

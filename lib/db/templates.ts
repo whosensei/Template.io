@@ -1,10 +1,11 @@
-import { eq } from 'drizzle-orm'
+import { eq, and } from 'drizzle-orm'
 import { getDbAsync } from './index'
 import { templates } from './schema'
 
 // Interface for template data
 export interface Template {
   id: string
+  userId: string // Required again - migration complete
   name: string
   content: string
   variables: Record<string, string>
@@ -63,17 +64,21 @@ const retryOperation = async <T>(
 // Template service with optimized queries
 export class TemplateService {
   // Get all templates with performance monitoring and retry logic
-  static async getAllTemplates(): Promise<Template[]> {
+  static async getAllTemplates(userId: string): Promise<Template[]> {
     const startTime = Date.now()
+    
+    console.log('[TemplateService.getAllTemplates] Querying for userId:', userId)
     
     return retryOperation(async () => {
       try {
         const db = await getDbAsync() // Use async version for better performance
         
-        // Optimized query with explicit field selection
+        // Optimized query with explicit field selection and user filtering
+        // During migration, also include templates with null userId (legacy templates)
         const result = await db
           .select({
             id: templates.id,
+            userId: templates.userId,
             name: templates.name,
             content: templates.content,
             variables: templates.variables,
@@ -81,8 +86,11 @@ export class TemplateService {
             updatedAt: templates.updatedAt,
           })
           .from(templates)
+          .where(eq(templates.userId, userId))
           .orderBy(templates.updatedAt) // Order by updated time for better UX
           .limit(50) // Reasonable limit to prevent huge responses
+        
+        console.log('[TemplateService.getAllTemplates] Found', result.length, 'templates for userId:', userId)
         
         // Convert timestamps to ISO strings
         const formattedResult = result.map(template => ({
@@ -102,15 +110,16 @@ export class TemplateService {
   }
 
   // Get a template by ID with optimized query
-  static async getTemplateById(id: string): Promise<Template | null> {
+  static async getTemplateById(id: string, userId: string): Promise<Template | null> {
     const startTime = Date.now()
     try {
       const db = await getDbAsync()
       
-      // Optimized single query with explicit fields
+      // Optimized single query with explicit fields and user filtering
       const result = await db
         .select({
           id: templates.id,
+          userId: templates.userId,
           name: templates.name,
           content: templates.content,
           variables: templates.variables,
@@ -118,7 +127,7 @@ export class TemplateService {
           updatedAt: templates.updatedAt,
         })
         .from(templates)
-        .where(eq(templates.id, id))
+        .where(and(eq(templates.id, id), eq(templates.userId, userId)))
         .limit(1)
       
       if (!result[0]) {
@@ -144,6 +153,7 @@ export class TemplateService {
 
   // Create template with optimized insert
   static async createTemplate(data: {
+    userId: string // Make required again
     name: string
     content: string
     variables: Record<string, string>
@@ -152,8 +162,14 @@ export class TemplateService {
     try {
       const db = await getDbAsync()
       
+      // Validate userId is provided
+      if (!data.userId) {
+        throw new Error('User ID is required')
+      }
+      
       // Let the database handle timestamps with defaultNow()
       const newTemplate = {
+        userId: data.userId,
         name: data.name,
         content: data.content,
         variables: data.variables,
@@ -185,6 +201,7 @@ export class TemplateService {
   // Update template with optimized query and retry logic
   static async updateTemplate(
     id: string,
+    userId: string,
     data: {
       name?: string
       content?: string
@@ -203,11 +220,11 @@ export class TemplateService {
           updatedAt: new Date(), // Use Date object, not string
         }
         
-        // Optimized update with returning
+        // Optimized update with returning and user filtering
         const result = await db
           .update(templates)
           .set(updateData)
-          .where(eq(templates.id, id))
+          .where(and(eq(templates.id, id), eq(templates.userId, userId)))
           .returning()
         
         if (!result[0]) {
@@ -232,17 +249,17 @@ export class TemplateService {
   }
 
   // Delete template with optimized query and retry logic
-  static async deleteTemplate(id: string): Promise<{ deleted: boolean; count: number }> {
+  static async deleteTemplate(id: string, userId: string): Promise<{ deleted: boolean; count: number }> {
     const startTime = Date.now()
     
     return retryOperation(async () => {
       try {
         const db = await getDbAsync()
         
-        // Optimized delete with returning to check if anything was deleted
+        // Optimized delete with returning to check if anything was deleted and user filtering
         const result = await db
           .delete(templates)
-          .where(eq(templates.id, id))
+          .where(and(eq(templates.id, id), eq(templates.userId, userId)))
           .returning({ id: templates.id })
         
         const deletedCount = result.length
@@ -270,17 +287,18 @@ export class TemplateService {
   }
 
   // Get templates by name with optimized search and retry logic
-  static async getTemplateByName(name: string): Promise<Template | null> {
+  static async getTemplateByName(name: string, userId: string): Promise<Template | null> {
     const startTime = Date.now()
     
     return retryOperation(async () => {
       try {
         const db = await getDbAsync()
         
-        // Optimized name search
+        // Optimized name search with user filtering
         const result = await db
           .select({
             id: templates.id,
+            userId: templates.userId,
             name: templates.name,
             content: templates.content,
             variables: templates.variables,
@@ -288,7 +306,7 @@ export class TemplateService {
             updatedAt: templates.updatedAt,
           })
           .from(templates)
-          .where(eq(templates.name, name))
+          .where(and(eq(templates.name, name), eq(templates.userId, userId)))
           .limit(1)
         
         if (!result[0]) {

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { TemplateEditor } from "@/components/editor/template-editor"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"

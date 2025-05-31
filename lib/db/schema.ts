@@ -2,6 +2,7 @@ import { pgTable, text, timestamp, uuid, json } from 'drizzle-orm/pg-core'
 
 export const templates = pgTable('templates', {
   id: uuid('id').primaryKey().defaultRandom(),
+  userId: text('user_id').notNull(),
   name: text('name').notNull(),
   content: text('content').notNull(),
   variables: json('variables').notNull().default({}),
