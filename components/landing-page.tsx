@@ -66,7 +66,11 @@ export function LandingPage() {
               </Button>
             </Link>
             <Link href="/sign-in">
-              <Button variant="outline" size="lg" className="border-gray-300 text-gray-700 hover:bg-gray-50 px-8 py-4 text-lg font-medium rounded-full">
+              <Button 
+                variant="outline" 
+                size="lg" 
+                className="border-gray-300 text-gray-700 hover:bg-gray-50 hover:text-gray-700 bg-white px-8 py-4 text-lg font-medium rounded-full"
+              >
                 Sign In
               </Button>
             </Link>
