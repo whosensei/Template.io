@@ -84,7 +84,7 @@ export function TemplateManagementControls({
         <Button 
           onClick={onDeleteTemplate}
           variant="outline"
-          className="w-full border-red-600 text-red-600 hover:bg-red-600/10 dark:hover:bg-red-500/20"
+          className="w-full border-red-600 text-red-600 hover:text-red-900 dark:text-red-100 bg-red-600/10 hover:bg-red-600/20 dark:bg-red-500/20 dark:hover:bg-red-500/30"
           disabled={!selectedTemplateId || isLoading}
           loading={isDeleting}
         >

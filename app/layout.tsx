@@ -4,6 +4,7 @@ import { Inter } from 'next/font/google';
 import { ThemeProvider } from '@/components/theme-provider';
 import { Toaster } from '@/components/ui/toaster';
 import { ClerkProvider } from '@clerk/nextjs';
+import { Analytics } from "@vercel/analytics/next"
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -84,6 +85,7 @@ export default function RootLayout({
           >
             {children}
             <Toaster />
+            <Analytics />
           </ThemeProvider>
         </body>
       </html>
