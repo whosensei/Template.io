@@ -30,6 +30,7 @@ interface TemplateEditDialogProps {
   onAddVariable: (name: string) => void
   onRemoveVariable: (name: string) => void
   onSave: () => void
+  isSaving?: boolean
 }
 
 export function TemplateEditDialog({
@@ -46,7 +47,8 @@ export function TemplateEditDialog({
   onVariableChange,
   onAddVariable,
   onRemoveVariable,
-  onSave
+  onSave,
+  isSaving = false
 }: TemplateEditDialogProps) {
   const subjectInputRef = useRef<HTMLInputElement>(null)
 
@@ -86,6 +88,7 @@ export function TemplateEditDialog({
                 onChange={(e) => onTemplateNameChange(e.target.value)}
                 placeholder="e.g., Job Application Follow-up"
                 className="w-full"
+                disabled={isSaving}
               />
             </div>
 
@@ -98,6 +101,7 @@ export function TemplateEditDialog({
                 onChange={(e) => onSubjectChange(e.target.value)}
                 placeholder="Enter email subject line..."
                 className="w-full"
+                disabled={isSaving}
               />
               {Object.keys(variables).length > 0 && (
                 <div className="space-y-2">
@@ -110,6 +114,7 @@ export function TemplateEditDialog({
                         size="sm"
                         onClick={() => insertVariableIntoSubject(variable)}
                         className="h-8 text-xs"
+                        disabled={isSaving}
                       >
                         {variable}
                       </Button>
@@ -124,12 +129,17 @@ export function TemplateEditDialog({
               onVariableChange={onVariableChange}
               onAddVariable={onAddVariable}
               onRemoveVariable={onRemoveVariable}
+              disabled={isSaving}
             />
             
             <div className="flex justify-end">
-              <Button onClick={onSave} className="flex items-center gap-2">
+              <Button 
+                onClick={onSave} 
+                className="flex items-center gap-2"
+                loading={isSaving}
+              >
                 <Save className="h-4 w-4" />
-                Save Template
+                {isSaving ? 'Saving...' : 'Save Template'}
               </Button>
             </div>
           </div>
@@ -140,6 +150,7 @@ export function TemplateEditDialog({
               onChange={onTemplateChange}
               variables={Object.keys(variables)}
               maxLength={5000}
+              disabled={isSaving}
             />
           </div>
         </div>

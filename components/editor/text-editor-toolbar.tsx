@@ -5,9 +5,10 @@ import { Bold, Italic, List, AlignLeft, AlignCenter, AlignRight, Heading1, Headi
 
 interface TextEditorToolbarProps {
   onFormat: (format: string) => void
+  disabled?: boolean
 }
 
-export function TextEditorToolbar({ onFormat }: TextEditorToolbarProps) {
+export function TextEditorToolbar({ onFormat, disabled = false }: TextEditorToolbarProps) {
   const formatButtons = [
     { format: 'bold', icon: Bold, label: 'Bold' },
     { format: 'italic', icon: Italic, label: 'Italic' },
@@ -29,6 +30,7 @@ export function TextEditorToolbar({ onFormat }: TextEditorToolbarProps) {
           size="sm" 
           onClick={() => onFormat(format)}
           className="h-8 px-2 rounded-sm"
+          disabled={disabled}
         >
           <Icon className="h-4 w-4" />
           <span className="sr-only">{label}</span>

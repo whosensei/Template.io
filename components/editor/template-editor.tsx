@@ -10,6 +10,7 @@ interface TemplateEditorProps {
   initialSubject?: string
   initialVariables?: Record<string, string>
   onSave?: (name: string, content: string, variables: Record<string, string>) => void
+  onUpdate?: (id: string, name: string, content: string, variables: Record<string, string>) => void
   templates?: Array<{ id: string, name: string }>
   onLoadTemplate?: (id: string) => void
   onDeleteTemplate?: (id: string) => void
@@ -21,6 +22,7 @@ export function TemplateEditor({
   initialSubject = '',
   initialVariables = {},
   onSave,
+  onUpdate,
   templates = [],
   onLoadTemplate,
   onDeleteTemplate,
@@ -34,6 +36,12 @@ export function TemplateEditor({
     setSubject,
     variables,
     selectedTemplateId,
+    templateDefinedVariables,
+    
+    // Loading states
+    isSaving,
+    isDeleting,
+    isLoading,
     
     // Dialog state
     isEditDialogOpen,
@@ -64,6 +72,7 @@ export function TemplateEditor({
     initialSubject,
     initialVariables,
     onSave,
+    onUpdate,
     templates,
     onLoadTemplate,
     onDeleteTemplate
@@ -90,6 +99,10 @@ export function TemplateEditor({
         onAddVariable={handleAddVariable}
         onRemoveVariable={handleRemoveVariable}
         onInsertVariable={handleInsertVariable}
+        templateDefinedVariables={templateDefinedVariables}
+        isSaving={isSaving}
+        isDeleting={isDeleting}
+        isLoading={isLoading}
       />
 
       <TemplateEditDialog
@@ -107,6 +120,7 @@ export function TemplateEditor({
         onAddVariable={handleEditingAddVariable}
         onRemoveVariable={handleEditingRemoveVariable}
         onSave={handleSaveFromDialog}
+        isSaving={isSaving}
       />
     </div>
   )

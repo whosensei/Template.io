@@ -19,6 +19,9 @@ interface TemplateManagementControlsProps {
   onNewTemplate: () => void
   onEditTemplate: () => void
   onDeleteTemplate: () => void
+  isCreating?: boolean
+  isDeleting?: boolean
+  isLoading?: boolean
 }
 
 export function TemplateManagementControls({
@@ -27,7 +30,10 @@ export function TemplateManagementControls({
   onTemplateSelect,
   onNewTemplate,
   onEditTemplate,
-  onDeleteTemplate
+  onDeleteTemplate,
+  isCreating = false,
+  isDeleting = false,
+  isLoading = false
 }: TemplateManagementControlsProps) {
   return (
     <div className="space-y-3">
@@ -40,7 +46,7 @@ export function TemplateManagementControls({
         <Label htmlFor="template-select" className="text-sm font-medium mb-2 block">
           Select Template
         </Label>
-        <Select value={selectedTemplateId} onValueChange={onTemplateSelect}>
+        <Select value={selectedTemplateId} onValueChange={onTemplateSelect} disabled={isLoading}>
           <SelectTrigger className="w-full">
             <SelectValue placeholder="Choose a template..." />
           </SelectTrigger>
@@ -57,9 +63,11 @@ export function TemplateManagementControls({
       <Button 
         onClick={onNewTemplate}
         className="w-full bg-white text-black hover:bg-gray-100 border border-gray-300"
+        loading={isCreating}
+        disabled={isLoading}
       >
         <Plus className="h-4 w-4 mr-2" />
-        New Template
+        {isCreating ? 'Creating...' : 'New Template'}
       </Button>
 
       <div className="grid grid-cols-2 gap-3">
@@ -67,7 +75,7 @@ export function TemplateManagementControls({
           onClick={onEditTemplate}
           variant="outline"
           className="w-full"
-          disabled={!selectedTemplateId}
+          disabled={!selectedTemplateId || isLoading}
         >
           <Edit className="h-4 w-4 mr-2" />
           Edit
@@ -76,11 +84,12 @@ export function TemplateManagementControls({
         <Button 
           onClick={onDeleteTemplate}
           variant="outline"
-          className="w-full border-red-600 text-red-600 hover:bg-red-50"
-          disabled={!selectedTemplateId}
+          className="w-full border-red-600 text-red-600 hover:bg-red-600/10 dark:hover:bg-red-500/20"
+          disabled={!selectedTemplateId || isLoading}
+          loading={isDeleting}
         >
           <Trash2 className="h-4 w-4 mr-2" />
-          Delete Template
+          {isDeleting ? 'Deleting...' : 'Delete Template'}
         </Button>
       </div>
     </div>

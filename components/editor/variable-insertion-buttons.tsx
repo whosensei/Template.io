@@ -5,9 +5,14 @@ import { Button } from "@/components/ui/button"
 interface VariableInsertionButtonsProps {
   variables: string[]
   onInsertVariable: (variable: string) => void
+  disabled?: boolean
 }
 
-export function VariableInsertionButtons({ variables, onInsertVariable }: VariableInsertionButtonsProps) {
+export function VariableInsertionButtons({ 
+  variables, 
+  onInsertVariable,
+  disabled = false 
+}: VariableInsertionButtonsProps) {
   if (!variables || variables.length === 0) {
     return null
   }
@@ -23,6 +28,7 @@ export function VariableInsertionButtons({ variables, onInsertVariable }: Variab
             size="sm"
             onClick={() => onInsertVariable(variable)}
             className="h-8 text-xs"
+            disabled={disabled}
           >
             {variable}
           </Button>

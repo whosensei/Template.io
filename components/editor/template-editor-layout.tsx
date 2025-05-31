@@ -29,6 +29,12 @@ interface TemplateEditorLayoutProps {
   onAddVariable: (name: string) => void
   onRemoveVariable: (name: string) => void
   onInsertVariable: (variable: string) => void
+  templateDefinedVariables?: Set<string>
+  
+  // Loading states
+  isSaving?: boolean
+  isDeleting?: boolean
+  isLoading?: boolean
 }
 
 export function TemplateEditorLayout({
@@ -46,7 +52,11 @@ export function TemplateEditorLayout({
   onVariableChange,
   onAddVariable,
   onRemoveVariable,
-  onInsertVariable
+  onInsertVariable,
+  templateDefinedVariables,
+  isSaving = false,
+  isDeleting = false,
+  isLoading = false
 }: TemplateEditorLayoutProps) {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -59,6 +69,8 @@ export function TemplateEditorLayout({
           onNewTemplate={onNewTemplate}
           onEditTemplate={onEditTemplate}
           onDeleteTemplate={onDeleteTemplate}
+          isDeleting={isDeleting}
+          isLoading={isLoading}
         />
 
         {/* Variable Section */}
@@ -67,6 +79,8 @@ export function TemplateEditorLayout({
           onVariableChange={onVariableChange}
           onAddVariable={onAddVariable}
           onRemoveVariable={onRemoveVariable}
+          templateDefinedVariables={templateDefinedVariables}
+          disabled={isLoading}
         />
       
       </div>
@@ -77,6 +91,9 @@ export function TemplateEditorLayout({
           template={template}
           variables={variables}
           subject={subject}
+          onTemplateChange={onTemplateChange}
+          onSubjectChange={onSubjectChange}
+          isSaving={isSaving}
         />
       </div>
     </div>

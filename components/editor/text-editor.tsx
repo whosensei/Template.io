@@ -13,6 +13,7 @@ interface TextEditorProps {
   onChange: (value: string) => void
   variables: string[]
   maxLength?: number
+  disabled?: boolean
   className?: string
 }
 
@@ -21,6 +22,7 @@ export function TextEditor({
   onChange,
   variables,
   maxLength = 5000,
+  disabled = false,
   className
 }: TextEditorProps) {
   const {
@@ -35,7 +37,7 @@ export function TextEditor({
     <div className={cn("space-y-2", className)}>
       <h3 className="text-lg font-medium">Template Editor</h3>
       
-      <TextEditorToolbar onFormat={handleFormatText} />
+      <TextEditorToolbar onFormat={handleFormatText} disabled={disabled} />
       
       <Textarea
         ref={textareaRef}
@@ -47,6 +49,7 @@ export function TextEditor({
         placeholder="Type your email template here..."
         className="min-h-[250px] font-mono text-base leading-relaxed resize-y"
         maxLength={maxLength}
+        disabled={disabled}
       />
       
       <TextEditorStats 
@@ -58,6 +61,7 @@ export function TextEditor({
       <VariableInsertionButtons 
         variables={variables}
         onInsertVariable={handleInsertVariable}
+        disabled={disabled}
       />
     </div>
   )
