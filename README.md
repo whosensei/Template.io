@@ -1,4 +1,4 @@
-# Email Template Manager with Neon PostgreSQL
+# Template.io
 
 A Next.js application for managing email templates with persistent storage using Neon PostgreSQL and Drizzle ORM.
 
