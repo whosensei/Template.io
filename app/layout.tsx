@@ -11,6 +11,9 @@ const inter = Inter({ subsets: ['latin'] });
 export const metadata: Metadata = {
   title: 'Template',
   description: 'Professional email template management system for job applications',
+  icons: {
+    icon: "/favicon.ico",
+  },
 };
 
 export default function RootLayout({
