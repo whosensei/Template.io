@@ -44,42 +44,47 @@ export function useTextEditor({ value, onChange }: UseTextEditorProps) {
     const selectedText = value.substring(start, end)
     let formattedText = ''
     let newCursorPos = start
+    let selectionEnd = start
 
     switch (format) {
       case 'bold':
         formattedText = `**${selectedText}**`
         newCursorPos = end + 4
+        selectionEnd = newCursorPos
         break
       case 'italic':
         formattedText = `*${selectedText}*`
         newCursorPos = end + 2
+        selectionEnd = newCursorPos
+        break
+      case 'underline':
+        formattedText = `<u>${selectedText}</u>`
+        newCursorPos = end + 7
+        selectionEnd = newCursorPos
+        break
+      case 'hyperlink':
+        formattedText = `[${selectedText}](https://example.com)`
+        newCursorPos = start + selectedText.length + 3 // Start of URL
+        selectionEnd = newCursorPos + 19 // End of "https://example.com"
         break
       case 'h1':
         formattedText = `# ${selectedText}`
         newCursorPos = end + 2
+        selectionEnd = newCursorPos
         break
       case 'h2':
         formattedText = `## ${selectedText}`
         newCursorPos = end + 3
+        selectionEnd = newCursorPos
         break
       case 'list':
         formattedText = `- ${selectedText}`
         newCursorPos = end + 2
-        break
-      case 'align-left':
-        // Simple implementation - would be more complex in a real editor
-        formattedText = selectedText
-        break
-      case 'align-center':
-        // Simple implementation - would be more complex in a real editor
-        formattedText = selectedText
-        break
-      case 'align-right':
-        // Simple implementation - would be more complex in a real editor
-        formattedText = selectedText
+        selectionEnd = newCursorPos
         break
       default:
         formattedText = selectedText
+        selectionEnd = newCursorPos
     }
 
     const newValue = value.substring(0, start) + formattedText + value.substring(end)
@@ -89,7 +94,7 @@ export function useTextEditor({ value, onChange }: UseTextEditorProps) {
     setTimeout(() => {
       if (textareaRef.current) {
         textareaRef.current.focus()
-        textareaRef.current.setSelectionRange(newCursorPos, newCursorPos)
+        textareaRef.current.setSelectionRange(newCursorPos, selectionEnd)
         setCursorPosition(newCursorPos)
       }
     }, 0)

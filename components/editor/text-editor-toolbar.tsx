@@ -1,7 +1,7 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { Bold, Italic, List, AlignLeft, AlignCenter, AlignRight, Heading1, Heading2 } from "lucide-react"
+import { Bold, Italic, Underline, Link, List, Heading1, Heading2 } from "lucide-react"
 
 interface TextEditorToolbarProps {
   onFormat: (format: string) => void
@@ -12,12 +12,11 @@ export function TextEditorToolbar({ onFormat, disabled = false }: TextEditorTool
   const formatButtons = [
     { format: 'bold', icon: Bold, label: 'Bold' },
     { format: 'italic', icon: Italic, label: 'Italic' },
+    { format: 'underline', icon: Underline, label: 'Underline' },
+    { format: 'hyperlink', icon: Link, label: 'Hyperlink' },
     { format: 'h1', icon: Heading1, label: 'Heading 1' },
     { format: 'h2', icon: Heading2, label: 'Heading 2' },
-    { format: 'list', icon: List, label: 'List' },
-    { format: 'align-left', icon: AlignLeft, label: 'Align Left' },
-    { format: 'align-center', icon: AlignCenter, label: 'Align Center' },
-    { format: 'align-right', icon: AlignRight, label: 'Align Right' }
+    { format: 'list', icon: List, label: 'List' }
   ]
 
   return (
