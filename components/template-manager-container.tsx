@@ -2,46 +2,56 @@
 
 import { useState } from "react"
 import { TemplateEditor } from "@/components/editor/template-editor"
-import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { RefreshCw, AlertCircle } from "lucide-react"
+import { RefreshCw, AlertTriangle } from "lucide-react"
 import { useTemplates } from "@/hooks/use-templates"
 
 // Skeleton component for loading state
 function TemplateSkeleton() {
   return (
-    <div className="space-y-4 animate-pulse">
-      {/* Header skeleton */}
-      <div className="flex justify-between items-center">
-        <div className="h-7 bg-muted rounded w-32"></div>
-        <div className="h-9 w-9 bg-muted rounded"></div>
-      </div>
-      
-      {/* Select skeleton */}
-      <div className="space-y-2">
-        <div className="h-4 bg-muted rounded w-24"></div>
-        <div className="h-10 bg-muted rounded w-full"></div>
-      </div>
-      
-      {/* Buttons skeleton */}
-      <div className="space-y-3">
-        <div className="h-10 bg-muted rounded w-full"></div>
-        <div className="grid grid-cols-2 gap-3">
-          <div className="h-10 bg-muted rounded"></div>
-          <div className="h-10 bg-muted rounded"></div>
+    <div className="animate-pulse">
+      <div className="space-y-6">
+        {/* Header skeleton */}
+        <div className="border-b border-gray-200 dark:border-zinc-700 pb-4">
+          <div className="h-8 bg-gray-200 dark:bg-zinc-700 rounded w-64 mb-2"></div>
+          <div className="h-4 bg-gray-100 dark:bg-zinc-800 rounded w-96"></div>
         </div>
-      </div>
-      
-      {/* Variables skeleton */}
-      <div className="space-y-3">
-        <div className="h-6 bg-muted rounded w-32"></div>
-        {Array.from({ length: 3 }).map((_, i) => (
-          <div key={i} className="grid grid-cols-[120px_1fr_auto] gap-3">
-            <div className="h-8 bg-muted rounded"></div>
-            <div className="h-8 bg-muted rounded"></div>
-            <div className="h-8 w-8 bg-muted rounded"></div>
+        
+        {/* Content skeleton */}
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
+          <div className="lg:col-span-2 space-y-6">
+            {/* Template selection */}
+            <div className="space-y-3">
+              <div className="h-5 bg-gray-200 dark:bg-zinc-700 rounded w-24"></div>
+              <div className="h-10 bg-gray-100 dark:bg-zinc-800 rounded"></div>
+            </div>
+            
+            {/* Actions */}
+            <div className="space-y-3">
+              <div className="h-10 bg-gray-200 dark:bg-zinc-700 rounded"></div>
+              <div className="flex gap-2">
+                <div className="h-9 bg-gray-100 dark:bg-zinc-800 rounded flex-1"></div>
+                <div className="h-9 bg-gray-100 dark:bg-zinc-800 rounded flex-1"></div>
+              </div>
+            </div>
+            
+            {/* Variables */}
+            <div className="space-y-4">
+              <div className="h-5 bg-gray-200 dark:bg-zinc-700 rounded w-20"></div>
+              {[1,2,3].map(i => (
+                <div key={i} className="flex gap-3">
+                  <div className="h-9 bg-gray-100 dark:bg-zinc-800 rounded w-24"></div>
+                  <div className="h-9 bg-gray-100 dark:bg-zinc-800 rounded flex-1"></div>
+                  <div className="h-9 w-9 bg-gray-100 dark:bg-zinc-800 rounded"></div>
+                </div>
+              ))}
+            </div>
           </div>
-        ))}
+          
+          <div className="lg:col-span-3">
+            <div className="h-96 bg-gray-100 dark:bg-zinc-800 rounded-lg"></div>
+          </div>
+        </div>
       </div>
     </div>
   )
@@ -50,17 +60,17 @@ function TemplateSkeleton() {
 // Error state component
 function ErrorState({ error, onRetry }: { error: string; onRetry: () => void }) {
   return (
-    <div className="flex flex-col items-center justify-center py-12 space-y-4">
-      <div className="flex items-center gap-2 text-destructive">
-        <AlertCircle className="h-5 w-5" />
-        <h3 className="font-medium">Failed to load templates</h3>
+    <div className="text-center py-12">
+      <div className="inline-flex items-center justify-center w-16 h-16 bg-red-50 dark:bg-red-900/20 rounded-full mb-4">
+        <AlertTriangle className="w-8 h-8 text-red-500 dark:text-red-400" />
       </div>
-      <p className="text-sm text-muted-foreground text-center max-w-md">
+      <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">Something went wrong</h3>
+      <p className="text-gray-600 dark:text-zinc-400 mb-6 max-w-md mx-auto">
         {error}
       </p>
-      <Button onClick={onRetry} variant="outline" size="sm">
-        <RefreshCw className="h-4 w-4 mr-2" />
-        Try Again
+      <Button onClick={onRetry} variant="outline">
+        <RefreshCw className="w-4 h-4 mr-2" />
+        Try again
       </Button>
     </div>
   )
@@ -164,24 +174,15 @@ export function TemplateManagerContainer() {
 
   // Show error state
   if (error && !loading && templates.length === 0) {
-    return (
-      <Card>
-        <CardContent className="p-6">
-          <ErrorState error={error} onRetry={refetch} />
-        </CardContent>
-      </Card>
-    )
+    return <ErrorState error={error} onRetry={refetch} />
   }
 
   return (
-    <Card>
-      <CardContent className="p-6">
+    <div className="min-h-screen bg-white dark:bg-black">
+      <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Show skeleton only during initial load without cached data */}
         {loading && templates.length === 0 ? (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <TemplateSkeleton />
-            <div className="min-h-[600px] bg-muted/20 rounded-md animate-pulse"></div>
-          </div>
+          <TemplateSkeleton />
         ) : (
           <TemplateEditor
             initialTemplate={currentTemplate}
@@ -194,7 +195,7 @@ export function TemplateManagerContainer() {
             onDeleteTemplate={handleDeleteTemplate}
           />
         )}
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   )
 } 

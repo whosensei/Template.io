@@ -31,14 +31,14 @@ export default function RootLayout({
           colorPrimary: '#000000',
           colorBackground: '#ffffff',
           colorInputBackground: '#ffffff',
-          colorInputText: '#000000',
-          colorText: '#000000',
-          colorTextSecondary: '#666666',
+          colorInputText: '#111827',
+          colorText: '#111827',
+          colorTextSecondary: '#6b7280',
           colorDanger: '#dc2626',
           colorSuccess: '#16a34a',
           colorWarning: '#ca8a04',
           colorNeutral: '#6b7280',
-          borderRadius: '6px',
+          borderRadius: '8px',
         },
         elements: {
           rootBox: {
@@ -47,24 +47,28 @@ export default function RootLayout({
           card: {
             backgroundColor: '#ffffff',
             borderColor: '#e5e7eb',
-            boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
+            boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
           },
           headerTitle: {
-            color: '#000000',
+            color: '#111827',
+            fontSize: '1.5rem',
+            fontWeight: '600',
           },
           headerSubtitle: {
-            color: '#666666',
+            color: '#6b7280',
           },
           socialButtonsBlockButton: {
             backgroundColor: '#ffffff',
             borderColor: '#e5e7eb',
-            color: '#000000',
+            color: '#111827',
+            borderRadius: '8px',
             '&:hover': {
               backgroundColor: '#f9fafb',
             },
           },
           formButtonPrimary: {
             backgroundColor: '#000000',
+            borderRadius: '8px',
             '&:hover': {
               backgroundColor: '#374151',
             },
@@ -74,6 +78,9 @@ export default function RootLayout({
             '&:hover': {
               color: '#374151',
             },
+          },
+          formFieldInput: {
+            borderRadius: '8px',
           },
         },
       }}

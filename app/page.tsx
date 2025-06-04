@@ -2,10 +2,10 @@
 
 import { useUser } from '@clerk/nextjs'
 import { PageLayout } from "@/components/page-layout"
-import { TemplateManagerHeader } from "@/components/template-manager-header"
 import { TemplateManagerContainer } from "@/components/template-manager-container"
 import { UserProfile } from "@/components/user-profile"
 import { LandingPage } from "@/components/landing-page"
+import { Navbar } from "@/components/navbar"
 
 export default function Home() {
   const { isSignedIn, isLoaded } = useUser()
@@ -29,10 +29,11 @@ export default function Home() {
 
   // Show main app for authenticated users
   return (
-    <PageLayout>
-      <TemplateManagerHeader />
-      <UserProfile />
-      <TemplateManagerContainer />
-    </PageLayout>
+    <>
+      <Navbar />
+      <PageLayout>
+        <TemplateManagerContainer />
+      </PageLayout>
+    </>
   )
 }
