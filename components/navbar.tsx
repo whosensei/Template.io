@@ -6,9 +6,9 @@ import { ThemeToggle } from "./theme-toggle"
 
 export function Navbar() {
   return (
-    <div className="sticky top-0 z-50 w-full bg-white/90 dark:bg-black/90 backdrop-blur-md pt-4">
+    <div className="top-0 z-50 w-full bg-white/90 dark:bg-black/90 backdrop-blur-md pt-4">
       <div className="max-w-7xl mx-auto px-4 py-3">
-        <div className="flex items-center justify-between bg-white/95 dark:bg-zinc-900/95 border border-gray-200/80 dark:border-zinc-700/80 rounded-2xl px-8 py-3 shadow-lg backdrop-blur-sm hover:shadow-xl transition-all duration-300">
+        <div className="flex items-center justify-between bg-white/95 dark:bg-zinc-900/95 border border-gray-200/80 dark:border-zinc-700/80 rounded-2xl px-8 py-3 backdrop-blur-sm hover:shadow-sm transition-all duration-300">
           {/* Left side - Logo and brand */}
           <div className="flex items-center gap-4">
             <div className="w-10 h-10 bg-gradient-to-br from-gray-900 to-black dark:from-white dark:to-gray-100 rounded-xl flex items-center justify-center shadow-md hover:shadow-lg transition-all duration-200 hover:scale-105">
