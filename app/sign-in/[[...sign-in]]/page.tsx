@@ -4,54 +4,76 @@ import Link from 'next/link'
 
 export default function Page() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white flex items-center justify-center p-4">
-      <div className="w-full max-w-md mx-auto">
-        {/* Logo/Brand */}
-        <div className="text-center mb-8 pr-14">
-          <Link href="/" className="inline-flex items-center space-x-2 text-black hover:opacity-80 transition-opacity">
-            <Mail className="h-8 w-8" />
-            <span className="text-2xl font-bold">Template</span>
-          </Link>
+    <div className="min-h-screen flex">
+      {/* Left side - Image */}
+      <div className="hidden lg:flex lg:w-1/2 relative">
+        <img
+          alt=""
+          src="/Cloud Photo Sunset.jpg"
+          className="absolute inset-0 h-full w-full object-cover opacity-80"
+        />
+        <div className="absolute inset-0 bg-black/20"></div>
+        <div className="relative z-10 flex flex-col justify-between p-12 text-white">
+          <div>
+            <Link href="/" className="inline-flex items-center space-x-3">
+              <Mail className="h-8 w-8" />
+              <span className="text-2xl font-bold">Template.io</span>
+            </Link>
+          </div>
+          <div>
+            <h1 className="text-4xl font-bold mb-4 tracking-tighter">
+              Welcome back to your workspace
+            </h1>
+            <p className="text-xl text-white/90 tracking-tighter">
+              Continue creating beautiful email templates and manage your projects with ease.
+            </p>
+          </div>
         </div>
-        
-        <div className="text-center mb-8 pr-14">
-          <h2 className="text-3xl font-bold text-gray-900">
-            Welcome back
-          </h2>
-          <p className="mt-2 text-sm text-gray-600">
-            Sign in to access your email templates
-          </p>
-        </div>
-        
-        <div className="flex justify-center">
+      </div>
+
+      {/* Right side - Form */}
+      <div className="flex-1 flex items-center justify-center p-8 bg-white">
+        <div className="w-full max-w-md">
+          {/* Mobile logo */}
+          <div className="lg:hidden text-center mb-8">
+            <Link href="/" className="inline-flex items-center space-x-3 text-gray-900">
+              <Mail className="h-8 w-8" />
+              <span className="text-2xl font-bold">Template.io</span>
+            </Link>
+          </div>
+
+          <div className="text-center mb-8 pr-12">
+            <h2 className="text-3xl font-bold text-gray-900 mb-2">
+              Sign in to your account
+            </h2>
+            <p className="text-gray-600">
+              Welcome back! Please sign in to continue
+            </p>
+          </div>
+
           <SignIn 
+            signUpUrl="/sign-up"
             appearance={{
               elements: {
-                formButtonPrimary: 'bg-black hover:bg-gray-800 text-white rounded-lg',
-                card: 'shadow-lg border border-gray-200 rounded-xl w-full',
+                formButtonPrimary: 'bg-gray-900 hover:bg-gray-800 text-white rounded-lg font-medium py-3 transition-colors',
+                card: 'shadow-none border-0 bg-transparent w-full',
                 headerTitle: 'hidden',
                 headerSubtitle: 'hidden',
-                socialButtonsIconButton: 'border-gray-300 hover:bg-gray-50',
+                socialButtonsIconButton: 'border-gray-300 hover:bg-gray-50 transition-colors rounded-lg',
                 dividerLine: 'bg-gray-200',
-                dividerText: 'text-gray-500',
-                formFieldInput: 'border-gray-300 focus:border-black focus:ring-1 focus:ring-black',
-                footerActionLink: 'text-black hover:text-gray-700',
+                dividerText: 'text-gray-500 text-sm',
+                formFieldInput: 'border-gray-300 focus:border-gray-900 focus:ring-1 focus:ring-gray-900 rounded-lg',
+                footerActionLink: 'text-gray-900 hover:text-gray-700 font-medium',
                 rootBox: 'w-full',
+                formFieldLabel: 'text-gray-700 font-medium text-sm',
               },
               variables: {
-                borderRadius: '12px',
+                borderRadius: '8px',
+                fontSize: '14px',
               }
             }}
           />
-        </div>
-        
-        <div className="text-center mt-6 pr-14">
-          <p className="text-sm text-gray-600">
-            Don't have an account?{' '}
-            <Link href="/sign-up" className="font-medium text-black hover:text-gray-700">
-              Sign up for free
-            </Link>
-          </p>
+
         </div>
       </div>
     </div>
