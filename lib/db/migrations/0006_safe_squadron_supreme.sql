@@ -1,0 +1,1 @@
+ALTER TABLE "gmail_connections" ADD CONSTRAINT "gmail_connections_user_id_email_unique" UNIQUE("user_id","email");

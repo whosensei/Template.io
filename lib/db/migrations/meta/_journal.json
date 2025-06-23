@@ -29,6 +29,27 @@
       "when": 1748697238915,
       "tag": "0003_slim_impossible_man",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1750574412520,
+      "tag": "0004_short_mandroid",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1750578048513,
+      "tag": "0005_unique_catseye",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1750693676103,
+      "tag": "0006_safe_squadron_supreme",
+      "breakpoints": true
     }
   ]
 }
