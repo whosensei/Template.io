@@ -280,23 +280,29 @@ export class GmailService {
 
     let body: string
     if (htmlContent) {
-      headers.push('Content-Type: multipart/alternative; boundary="boundary123"')
+      // Generate unique boundary for multipart email
+      const boundary = `----=_Part_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+      headers.push(`Content-Type: multipart/alternative; boundary="${boundary}"`)
+      
       body = [
         '',
-        '--boundary123',
+        `--${boundary}`,
         'Content-Type: text/plain; charset=UTF-8',
+        'Content-Transfer-Encoding: 7bit',
         '',
         textContent,
         '',
-        '--boundary123',
+        `--${boundary}`,
         'Content-Type: text/html; charset=UTF-8',
+        'Content-Transfer-Encoding: 7bit',
         '',
         htmlContent,
         '',
-        '--boundary123--'
+        `--${boundary}--`
       ].join('\n')
     } else {
       headers.push('Content-Type: text/plain; charset=UTF-8')
+      headers.push('Content-Transfer-Encoding: 7bit')
       body = '\n' + textContent
     }
 

@@ -54,17 +54,26 @@ export function useTemplateEditor({
     // Track which variables are template-defined
     const newTemplateDefinedVars = new Set<string>()
     
+    // Check if we actually need to update anything
+    let hasChanges = false
+    
     // Add any new variables found in the template or subject
     allVars.forEach(varName => {
       newTemplateDefinedVars.add(varName)
       if (!(varName in newVariables)) {
         newVariables[varName] = ''
+        hasChanges = true
       }
     })
     
-    setTemplateDefinedVariables(newTemplateDefinedVars)
-    setVariables(newVariables)
-  }, [template, subject])
+    // Only update state if there are actual changes
+    if (hasChanges || templateDefinedVariables.size !== newTemplateDefinedVars.size) {
+      setTemplateDefinedVariables(newTemplateDefinedVars)
+      if (hasChanges) {
+        setVariables(newVariables)
+      }
+    }
+  }, [template, subject, variables, templateDefinedVariables])
   
   // Update when initialTemplate or initialVariables change
   useEffect(() => {

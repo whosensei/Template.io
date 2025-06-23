@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
 import { gmailService } from '@/lib/gmail'
-import { replaceVariables } from '@/lib/utils/template'
+import { replaceVariables, convertToEmailHTML, convertToPlainText } from '@/lib/utils/template'
 
 export async function POST(request: NextRequest) {
   try {
@@ -40,14 +40,20 @@ export async function POST(request: NextRequest) {
     const processedSubject = replaceVariables(subject, variables)
     const processedTemplate = replaceVariables(template, variables)
 
-    // Create email data
+    // Generate HTML version that matches the preview
+    const htmlContent = convertToEmailHTML(processedTemplate)
+    
+    // Generate clean plain text version as fallback
+    const plainTextContent = convertToPlainText(processedTemplate)
+
+    // Create email data with both HTML and plain text versions
     const emailData = {
       to: to.map((email: string) => ({ email })),
       cc: cc.map((email: string) => ({ email })),
       bcc: bcc.map((email: string) => ({ email })),
       subject: processedSubject,
-      textContent: processedTemplate,
-      // TODO: Add HTML content if needed
+      textContent: plainTextContent,
+      htmlContent: htmlContent
     }
 
     // Send email

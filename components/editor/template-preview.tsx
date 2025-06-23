@@ -135,13 +135,15 @@ export function TemplatePreview({
 
   // Function to convert markdown-like syntax to HTML
   const formatText = (text: string) => {
+    if (!text) return ""
+    
     let formatted = text
-      // Replace bold
-      .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
-      // Replace italic
-      .replace(/\*(.*?)\*/g, "<em>$1</em>")
+      // Replace bold with styled spans
+      .replace(/\*\*(.*?)\*\*/g, "<strong style='font-weight: bold;'>$1</strong>")
+      // Replace italic with styled spans
+      .replace(/\*(.*?)\*/g, "<em style='font-style: italic;'>$1</em>")
       // Replace underline
-      .replace(/<u>(.*?)<\/u>/g, "<u>$1</u>")
+      .replace(/<u>(.*?)<\/u>/g, "<span style='text-decoration: underline;'>$1</span>")
       // Replace hyperlinks [text](url)
       .replace(
         /\[([^\]]*)\]\(([^)]*)\)/g,
@@ -162,19 +164,46 @@ export function TemplatePreview({
         /^- (.*?)$/gm,
         '<li class="ml-4 text-gray-900 dark:text-white">$1</li>'
       )
-      // Replace paragraphs
-      .replace(/(?:^|\n)(?!<h1|<h2|<li)(.*?)(?:\n|$)/g, (match, p1) => {
-        if (p1.trim() === "") return match;
-        return `<p class="mb-3 text-gray-900 dark:text-white leading-relaxed">${p1}</p>`;
-      });
 
-    // Wrap lists in ul tags
-    if (formatted.includes("<li")) {
-      formatted = formatted.replace(
-        /(<li.*?<\/li>)+/g,
-        '<ul class="list-disc ml-4 mb-4">$&</ul>'
-      );
+    // Convert line breaks to proper paragraphs
+    const lines = formatted.split('\n')
+    const processedLines: string[] = []
+    let inList = false
+
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i].trim()
+      
+      if (line.includes('<li')) {
+        if (!inList) {
+          processedLines.push('<ul class="list-disc ml-4 mb-4">')
+          inList = true
+        }
+        processedLines.push(line)
+      } else {
+        if (inList) {
+          processedLines.push('</ul>')
+          inList = false
+        }
+        
+        if (line === '') {
+          // Empty line - don't add paragraph
+          continue
+        } else if (line.startsWith('<h1') || line.startsWith('<h2')) {
+          // Headers - add as is
+          processedLines.push(line)
+        } else if (line.length > 0) {
+          // Regular text - wrap in paragraph
+          processedLines.push(`<p class="mb-3 text-gray-900 dark:text-white leading-relaxed">${line}</p>`)
+        }
+      }
     }
+    
+    // Close any open list
+    if (inList) {
+      processedLines.push('</ul>')
+    }
+
+    let result = processedLines.join('\n')
 
     // Get color classes based on highlightColor prop
     const getHighlightClasses = () => {
@@ -195,12 +224,12 @@ export function TemplatePreview({
     }
 
     // Highlight variables that haven't been replaced
-    formatted = formatted.replace(
+    result = result.replace(
       /{{(.*?)}}/g,
       `<span class="${getHighlightClasses()} px-2 py-1 rounded font-medium">{{$1}}</span>`
     );
 
-    return formatted;
+    return result;
   };
 
   const canEdit = !!(onTemplateChange || onSubjectChange);

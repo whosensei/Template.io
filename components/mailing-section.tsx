@@ -238,7 +238,7 @@ export function MailingSection({
       const defaultConnection = gmailConnections.find(conn => conn.isActive) || gmailConnections[0]
       setSelectedFrom(defaultConnection.email)
     }
-  }, [gmailConnections, selectedFrom])
+  }, [gmailConnections]) // Remove selectedFrom to prevent infinite loop
 
   // Notify parent component of email data changes
   React.useEffect(() => {

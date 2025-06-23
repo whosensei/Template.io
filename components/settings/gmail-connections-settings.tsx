@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Mail, Trash2, AlertTriangle } from "lucide-react"
+import { Mail, AlertTriangle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { toast } from "sonner"
@@ -105,7 +105,11 @@ export function GmailConnectionsSettings({
                   <div className="flex items-center gap-2 mt-1">
                     <Badge 
                       variant={connection.isActive ? "default" : "secondary"}
-                      className="text-xs"
+                      className={`text-xs ${
+                        connection.isActive 
+                          ? "bg-green-100 text-green-800 hover:bg-green-100 dark:bg-green-900/20 dark:text-green-400 dark:hover:bg-green-900/20" 
+                          : ""
+                      }`}
                     >
                       {connection.isActive ? "Connected" : "Disconnected"}
                     </Badge>
@@ -120,34 +124,20 @@ export function GmailConnectionsSettings({
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
                     <Button
-                      variant="outline"
+                      variant="ghost"
                       size="sm"
                       disabled={isDisconnecting === connection.email}
-                      className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                      className="text-muted-foreground hover:text-foreground hover:bg-muted"
                     >
-                      <Trash2 className="w-4 h-4 mr-2" />
                       {isDisconnecting === connection.email ? "Disconnecting..." : "Disconnect"}
                     </Button>
                   </AlertDialogTrigger>
                   <AlertDialogContent>
                     <AlertDialogHeader>
-                      <AlertDialogTitle className="flex items-center gap-2">
-                        <AlertTriangle className="w-5 h-5 text-amber-500" />
-                        Disconnect Gmail Account
-                      </AlertDialogTitle>
-                      <AlertDialogDescription className="space-y-2">
-                        <p>
-                          Are you sure you want to disconnect <strong>{connection.email}</strong>?
-                        </p>
-                        <div className="bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-md p-3">
-                          <div className="flex items-start gap-2">
-                            <AlertTriangle className="w-4 h-4 text-amber-600 dark:text-amber-400 mt-0.5" />
-                            <div className="text-sm text-amber-800 dark:text-amber-200">
-                              <p className="font-medium mb-1">Important Note:</p>
-                              <p>You will need to reconnect this Gmail account to send emails.</p>
-                            </div>
-                          </div>
-                        </div>
+                      <AlertDialogTitle>Disconnect Gmail Account</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        Are you sure you want to disconnect <strong>{connection.email}</strong>? 
+                        You'll need to reconnect this account to send emails from it.
                       </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
@@ -156,7 +146,7 @@ export function GmailConnectionsSettings({
                         onClick={() => handleDisconnect(connection.email)}
                         className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                       >
-                        Disconnect
+                        {isDisconnecting === connection.email ? "Disconnecting..." : "Disconnect"}
                       </AlertDialogAction>
                     </AlertDialogFooter>
                   </AlertDialogContent>

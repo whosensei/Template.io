@@ -38,6 +38,7 @@ export function useGmailConnections() {
     } catch (error) {
       console.error('Error fetching Gmail connections:', error)
       toast.error('Failed to load Gmail connections')
+      setConnections([]) // Reset connections on error
     } finally {
       setLoading(false)
     }
@@ -110,7 +111,7 @@ export function useGmailConnections() {
     }
 
     setConnecting(false)
-  }, [fetchConnections])
+  }, [])
 
   return {
     connections,
