@@ -136,7 +136,7 @@ export function TemplateEditDialog({
               <Button 
                 onClick={onSave} 
                 className="flex items-center gap-2"
-                loading={isSaving}
+                disabled={isSaving}
               >
                 <Save className="h-4 w-4" />
                 {isSaving ? 'Saving...' : 'Save Template'}

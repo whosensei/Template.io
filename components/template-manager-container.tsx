@@ -107,7 +107,7 @@ export function TemplateManagerContainer() {
   const [currentVariables, setCurrentVariables] = useState<Record<string, string>>({
     recipientTitle: "Sir/Madam",
     jobRole: "Software Developer",
-    companyName: "Acme Corporation",
+    companyName: "",
   })
 
   const handleSaveTemplate = (
@@ -178,24 +178,25 @@ export function TemplateManagerContainer() {
   }
 
   return (
-    <div className="min-h-screen bg-white dark:bg-black">
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        {/* Show skeleton only during initial load without cached data */}
-        {loading && templates.length === 0 ? (
+    <div className="h-full bg-white dark:bg-black">
+      {/* Show skeleton only during initial load without cached data */}
+      {loading && templates.length === 0 ? (
+        <div className="h-full flex items-center justify-center">
           <TemplateSkeleton />
-        ) : (
-          <TemplateEditor
-            initialTemplate={currentTemplate}
-            initialSubject={currentSubject}
-            initialVariables={currentVariables}
-            onSave={handleSaveTemplate}
-            onUpdate={handleUpdateTemplate}
-            templates={templates.map(t => ({ id: t.id, name: t.name }))}
-            onLoadTemplate={handleLoadTemplate}
-            onDeleteTemplate={handleDeleteTemplate}
-          />
-        )}
-      </div>
+        </div>
+      ) : (
+        <TemplateEditor
+          initialTemplate={currentTemplate}
+          initialSubject={currentSubject}
+          initialVariables={currentVariables}
+          onSave={handleSaveTemplate}
+          onUpdate={handleUpdateTemplate}
+          templates={templates.map(t => ({ id: t.id, name: t.name }))}
+          onLoadTemplate={handleLoadTemplate}
+          onDeleteTemplate={handleDeleteTemplate}
+          className="h-full"
+        />
+      )}
     </div>
   )
 } 

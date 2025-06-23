@@ -1,7 +1,7 @@
 "use client"
 
 import React from 'react'
-import { TemplateEditorLayout } from './template-editor-layout'
+import { TemplateEditorWithSidebar } from './template-editor-with-sidebar'
 import { TemplateEditDialog } from './template-edit-dialog'
 import { useTemplateEditor } from '@/hooks/use-template-editor'
 
@@ -83,9 +83,10 @@ export function TemplateEditor({
 
   return (
     <div className={className}>
-      <TemplateEditorLayout
+      <TemplateEditorWithSidebar
         templates={templates}
         selectedTemplateId={selectedTemplateId}
+        currentTemplateName={templates.find(t => t.id === selectedTemplateId)?.name}
         onTemplateSelect={handleTemplateSelect}
         onNewTemplate={handleNewTemplate}
         onEditTemplate={handleEditTemplate}

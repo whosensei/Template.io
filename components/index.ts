@@ -21,4 +21,11 @@ export { JobApplicationForm } from './job-application-form'
 
 // Theme Components
 export { ThemeProvider } from './theme-provider'
-export { ThemeToggle } from './theme-toggle' 
+export { ThemeToggle } from './theme-toggle'
+export { SettingsDialog } from './settings-dialog'
+
+// Settings Components
+export { SettingsSection } from './settings/settings-section'
+export { ThemeSettings } from './settings/theme-settings'
+export { GmailConnectionsSettings } from './settings/gmail-connections-settings'
+export { HighlightColorSettings } from './settings/highlight-color-settings' 

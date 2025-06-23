@@ -1,5 +1,6 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import { TextEditor } from "./text-editor"
 import { TemplatePreview } from "./template-preview"
 import { VariableForm } from "./variable-form"
@@ -58,13 +59,42 @@ export function TemplateEditorLayout({
   isDeleting = false,
   isLoading = false
 }: TemplateEditorLayoutProps) {
+  const [highlightColor, setHighlightColor] = useState<string>('blue')
+
+  // Fetch user preferences for highlight color
+  useEffect(() => {
+    const fetchHighlightColor = async () => {
+      try {
+        const response = await fetch('/api/user/preferences')
+        if (response.ok) {
+          const data = await response.json()
+          setHighlightColor(data.highlightColor || 'blue')
+        }
+      } catch (error) {
+        console.error('Error fetching highlight color:', error)
+      }
+    }
+    fetchHighlightColor()
+
+    // Listen for highlight color changes
+    const handleColorChange = (event: CustomEvent) => {
+      setHighlightColor(event.detail.color)
+    }
+
+    window.addEventListener('highlightColorChanged', handleColorChange as EventListener)
+    
+    return () => {
+      window.removeEventListener('highlightColorChanged', handleColorChange as EventListener)
+    }
+  }, [])
+
   return (
-    <div className="h-[calc(100vh-120px)] px-1">
+    <div className="px-1">
       {/* Card Container */}
-      <div className="h-full border border-gray-200 dark:border-zinc-700 rounded-lg bg-white dark:bg-black shadow-sm">
-        <div className="h-full grid grid-cols-1 lg:grid-cols-5 gap-8 p-6">
+      <div className="border border-gray-200 dark:border-zinc-700 rounded-lg bg-white dark:bg-black shadow-sm">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 p-6 items-start">
           {/* Left Sidebar - Controls */}
-          <div className="lg:col-span-2 flex flex-col gap-6 min-h-0 pl-1">
+          <div className="lg:col-span-2 flex flex-col gap-6 pl-1">
             {/* Template Management */}
             <div className="flex-shrink-0">
               <TemplateManagementControls
@@ -80,22 +110,20 @@ export function TemplateEditorLayout({
             </div>
 
             {/* Variables */}
-            <div className="flex-1 min-h-0">
-              <div className="h-full overflow-y-auto custom-scrollbar pr-3">
-                <VariableForm
-                  variables={variables}
-                  onVariableChange={onVariableChange}
-                  onAddVariable={onAddVariable}
-                  onRemoveVariable={onRemoveVariable}
-                  templateDefinedVariables={templateDefinedVariables}
-                  disabled={isLoading}
-                />
-              </div>
+            <div>
+              <VariableForm
+                variables={variables}
+                onVariableChange={onVariableChange}
+                onAddVariable={onAddVariable}
+                onRemoveVariable={onRemoveVariable}
+                templateDefinedVariables={templateDefinedVariables}
+                disabled={isLoading}
+              />
             </div>
           </div>
           
           {/* Right Content - Preview */}
-          <div className="lg:col-span-3 min-h-0">
+          <div className="lg:col-span-3">
             <TemplatePreview
               template={template}
               variables={variables}
@@ -103,6 +131,7 @@ export function TemplateEditorLayout({
               onTemplateChange={onTemplateChange}
               onSubjectChange={onSubjectChange}
               isSaving={isSaving}
+              highlightColor={highlightColor}
             />
           </div>
         </div>
