@@ -79,7 +79,7 @@ export function TemplateEditorWithSidebar({
     canSend: false
   })
   
-  const { connections, connecting, connectGmail } = useGmailConnections()
+  const { connections, connecting, connectGmail, disconnectGmail } = useGmailConnections()
   const { sending, sendEmail } = useEmailSending()
 
   // Fetch user preferences for highlight color
@@ -184,7 +184,7 @@ export function TemplateEditorWithSidebar({
             <div className="w-full xl:w-1/3 flex flex-col min-h-0 order-2 xl:order-1">
               {/* Single Card Container for Equal Heights */}
               <Card className="flex-1 min-h-0 flex flex-col">
-              <CardContent className="flex-1 overflow-y-auto p-3 sm:p-6">
+              <CardContent className="flex-1 overflow-y-auto p-3 sm:p-6 custom-scrollbar">
                 <div className="space-y-6">
                   {/* Variables Section */}
                   <div>
@@ -196,11 +196,10 @@ export function TemplateEditorWithSidebar({
                       templateDefinedVariables={templateDefinedVariables}
                       disabled={isLoading}
                       className="border-0 shadow-none bg-transparent"
+                      showAddSection={false}
+                      useDottedContainer={true}
                     />
                   </div>
-
-                  {/* Separator */}
-                  <Separator />
 
                   {/* Mailing Section */}
                   <div>
@@ -212,6 +211,7 @@ export function TemplateEditorWithSidebar({
                         isActive: conn.isActive
                       }))}
                       onConnectGmail={connectGmail}
+                      onDisconnectGmail={disconnectGmail}
                       isLoading={connecting}
                       isSending={sending}
                       onEmailDataChange={handleEmailDataChange}

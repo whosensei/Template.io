@@ -82,40 +82,78 @@
   body {
     @apply bg-background text-foreground;
   }
+  
+  /* Auto-hide scrollbar - only appears when scrolling */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+  }
+  
+  *::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  
+  *::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  *::-webkit-scrollbar-thumb {
+    background-color: transparent;
+    border-radius: 3px;
+    transition: background-color 0.3s ease;
+  }
+  
+  /* Show scrollbar only when actively scrolling */
+  .is-scrolling::-webkit-scrollbar-thumb {
+    background-color: hsl(var(--muted-foreground) / 0.4);
+  }
+  
+  .is-scrolling {
+    scrollbar-color: hsl(var(--muted-foreground) / 0.4) transparent;
+  }
+  
+  *::-webkit-scrollbar-thumb:hover {
+    background-color: hsl(var(--muted-foreground) / 0.6);
+  }
+  
+  *::-webkit-scrollbar-corner {
+    background: transparent;
+  }
 }
 
 /* Custom scrollbar styles */
 .custom-scrollbar {
   scrollbar-width: thin;
-  scrollbar-color: rgb(209 213 219) transparent;
+  scrollbar-color: hsl(var(--muted-foreground) / 0.3) transparent;
 }
 
 .custom-scrollbar::-webkit-scrollbar {
-  width: 6px;
+  width: 8px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
   background: transparent;
+  border-radius: 4px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background-color: rgb(209 213 219);
-  border-radius: 3px;
+  background-color: hsl(var(--muted-foreground) / 0.3);
+  border-radius: 4px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+  transition: background-color 0.2s ease;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background-color: rgb(156 163 175);
+  background-color: hsl(var(--muted-foreground) / 0.5);
 }
 
-/* Dark mode scrollbar */
-.dark .custom-scrollbar {
-  scrollbar-color: rgb(82 82 91) transparent;
+.custom-scrollbar::-webkit-scrollbar-thumb:active {
+  background-color: hsl(var(--muted-foreground) / 0.7);
 }
 
-.dark .custom-scrollbar::-webkit-scrollbar-thumb {
-  background-color: rgb(82 82 91);
-}
-
-.dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background-color: rgb(113 113 122);
+/* Scrollbar corner */
+.custom-scrollbar::-webkit-scrollbar-corner {
+  background: transparent;
 }

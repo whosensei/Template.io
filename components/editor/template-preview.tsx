@@ -397,7 +397,7 @@ export function TemplatePreview({
               ref={templateTextareaRef}
               value={editedTemplate}
               onChange={(e) => setEditedTemplate(e.target.value)}
-              className="w-full flex-1 min-h-[150px] sm:min-h-[200px] border border-white dark:border-zinc-900 p-0 resize-none bg-transparent focus-visible:ring-0 focus:ring-0 focus:border-white dark:focus:border-zinc-900 focus:outline-none shadow-none text-gray-900 dark:text-white text-sm sm:text-base"
+              className="w-full flex-1 min-h-[150px] sm:min-h-[200px] border border-white dark:border-zinc-900 p-0 resize-none bg-transparent focus-visible:ring-0 focus:ring-0 focus:border-white dark:focus:border-zinc-900 focus:outline-none shadow-none text-gray-900 dark:text-white text-sm sm:text-base custom-scrollbar"
               disabled={isSaving}
               onKeyDown={(e) => {
                 if (e.key === "Enter" && e.ctrlKey) {
@@ -409,7 +409,7 @@ export function TemplatePreview({
             />
           ) : (
             <div
-              className="prose prose-sm sm:prose-base max-w-none break-words text-gray-900 dark:text-white dark:prose-invert flex-1 overflow-y-auto"
+              className="prose prose-sm sm:prose-base max-w-none break-words text-gray-900 dark:text-white dark:prose-invert flex-1 overflow-y-auto custom-scrollbar"
               dangerouslySetInnerHTML={{ __html: formatText(renderedTemplate) }}
             />
           )}

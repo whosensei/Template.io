@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { useState, useCallback } from "react"
-import { Mail, Plus, X, Settings, AlertTriangle, Info } from "lucide-react"
+import { Mail, Plus, X, Settings, AlertTriangle, Info, Unplug, UserX, Trash2, MoreVertical } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -24,6 +24,23 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 import { cn } from "@/lib/utils"
 
 interface EmailRecipient {
@@ -46,6 +63,7 @@ interface MailingSectionProps {
   }) => Promise<void>
   gmailConnections: GmailConnection[]
   onConnectGmail: () => void
+  onDisconnectGmail?: (email: string) => Promise<void>
   isLoading?: boolean
   isSending?: boolean
   onEmailDataChange?: (emailData: {
@@ -142,33 +160,33 @@ const EmailInputField = React.memo(({
 
   return (
     <div className="space-y-2">
-      <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-        <Label htmlFor={`${label.toLowerCase()}-input`} className="text-xs sm:text-sm font-medium min-w-fit">
-          {label}:
-        </Label>
-        {onToggle && !showField && (
+      {/* Toggle buttons for CC/BCC */}
+      {onToggle && !showField && (
+        <div className="flex justify-start">
           <Button
             variant="ghost"
             size="sm"
             onClick={onToggle}
-            className="h-6 px-2 text-xs text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 self-start sm:self-center"
+            className="h-6 px-2 text-xs text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
           >
             <Plus className="w-3 h-3 mr-1" />
             Add {label}
           </Button>
-        )}
-        {onToggle && showField && canCollapse && (
+        </div>
+      )}
+      {onToggle && showField && canCollapse && (
+        <div className="flex justify-end">
           <Button
             variant="ghost"
             size="sm"
             onClick={onToggle}
-            className="h-6 px-2 text-xs text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 self-start sm:self-center"
+            className="h-6 px-2 text-xs text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
           >
             <X className="w-3 h-3 mr-1" />
             Remove {label}
           </Button>
-        )}
-      </div>
+        </div>
+      )}
       
       {showField && (
         <>
@@ -197,10 +215,11 @@ const EmailInputField = React.memo(({
               type="button"
               onClick={handleAddClick}
               disabled={!input.trim() || !isValidEmail(input.trim())}
-              className="text-xs sm:text-sm w-full sm:w-auto h-10"
+              variant="default"
+              size="sm"
+              className="w-full sm:w-auto"
             >
-              <Plus className="w-4 h-4 mr-1" />
-              Add
+              <Plus className="w-3 h-3 sm:w-4 sm:h-4" />
             </Button>
           </div>
         </>
@@ -215,6 +234,7 @@ export function MailingSection({
   onSend,
   gmailConnections,
   onConnectGmail,
+  onDisconnectGmail,
   isLoading = false,
   isSending = false,
   onEmailDataChange,
@@ -296,17 +316,17 @@ export function MailingSection({
   }, [])
 
   return (
-    <Card className={cn("w-full", className)}>
-      <CardHeader className="pb-3 sm:pb-4 px-0">
-        <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
-          <Mail className="w-4 h-4 sm:w-5 sm:h-5" />
-          Email Composition
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-3 sm:space-y-4 p-0">
-        {/* From Section */}
-        <div className="space-y-2">
-          <Label className="text-xs sm:text-sm font-medium">From:</Label>
+    <div className={cn("w-full space-y-4", className)}>
+      {/* Email Composition Heading */}
+      <div className="text-sm font-medium text-muted-foreground">
+        Email Composition
+      </div>
+
+      {/* Email Composition Content in Dotted Container */}
+      <div className="min-h-[120px] p-4 border-2 border-dashed border-muted rounded-lg space-y-3">
+        {/* From Section Card */}
+        <div className="p-3 bg-muted/30 rounded-lg border">
+          <Label className="text-sm font-medium mb-2 block">From:</Label>
           {gmailConnections.length > 0 ? (
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
               <Select value={selectedFrom} onValueChange={handleFromChange}>
@@ -316,12 +336,7 @@ export function MailingSection({
                 <SelectContent>
                   {gmailConnections.map((connection) => (
                     <SelectItem key={connection.id} value={connection.email}>
-                      <div className="flex items-center justify-between w-full">
-                        <span className="truncate">{connection.email}</span>
-                        <span className="ml-2 text-xs text-muted-foreground">
-                          {connection.isActive ? "(Active)" : "(Inactive)"}
-                        </span>
-                      </div>
+                      <span className="truncate">{connection.email}</span>
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -333,31 +348,115 @@ export function MailingSection({
                     <span className="sm:hidden ml-2">Settings</span>
                   </Button>
                 </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Gmail Connections</DialogTitle>
+                <DialogContent className="sm:max-w-lg">
+                  <DialogHeader className="space-y-3">
+                    <DialogTitle className="flex items-center gap-2">
+                      <Mail className="w-5 h-5" />
+                      Gmail Connections
+                    </DialogTitle>
                     <DialogDescription>
-                      Manage your connected Gmail accounts
+                      Manage your connected Gmail accounts for sending emails
                     </DialogDescription>
                   </DialogHeader>
-                  <div className="space-y-3">
-                    {gmailConnections.map((connection) => (
-                      <div key={connection.id} className="flex items-center justify-between p-3 border rounded-lg">
-                        <div>
-                          <div className="font-medium">{connection.email}</div>
-                          <div className="text-sm text-gray-500">
-                            {connection.isActive ? "Active" : "Inactive"}
-                          </div>
-                        </div>
-                        <Badge variant={connection.isActive ? "default" : "secondary"}>
-                          {connection.isActive ? "Connected" : "Disconnected"}
-                        </Badge>
+                  <div className="space-y-6 pt-2">
+                    {gmailConnections.length === 0 ? (
+                      <div className="text-center py-6">
+                        <Mail className="w-12 h-12 mx-auto text-muted-foreground mb-3" />
+                        <p className="text-sm text-muted-foreground mb-4">
+                          No Gmail accounts connected
+                        </p>
+                        <Button onClick={onConnectGmail} size="sm">
+                          <Plus className="w-4 h-4 mr-2" />
+                          Connect Gmail
+                        </Button>
                       </div>
-                    ))}
-                    <Button onClick={onConnectGmail} className="w-full">
-                      <Plus className="w-4 h-4 mr-2" />
-                      Connect New Gmail Account
-                    </Button>
+                    ) : (
+                      <>
+                        <div className="space-y-4">
+                          {gmailConnections.map((connection) => (
+                            <div key={connection.id} className="flex items-center gap-4 p-4 border rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors">
+                              <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
+                                <Mail className="w-5 h-5 text-primary" />
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <div className="font-medium truncate">{connection.email}</div>
+                                <div className="flex items-center gap-2 mt-1">
+                                  <Badge 
+                                    variant={connection.isActive ? "default" : "secondary"}
+                                    className={`text-xs ${
+                                      connection.isActive 
+                                        ? "bg-green-100 text-green-800 hover:bg-green-100 dark:bg-green-900/20 dark:text-green-400" 
+                                        : ""
+                                    }`}
+                                  >
+                                    {connection.isActive ? "Connected" : "Disconnected"}
+                                  </Badge>
+                                </div>
+                              </div>
+                                                            
+                              {connection.isActive && onDisconnectGmail && (
+                                <div className="flex-shrink-0">
+                                  <AlertDialog>
+                                    <DropdownMenu>
+                                      <DropdownMenuTrigger asChild>
+                                        <Button
+                                          variant="ghost"
+                                          size="sm"
+                                          className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground"
+                                        >
+                                          <MoreVertical className="w-4 h-4" />
+                                        </Button>
+                                      </DropdownMenuTrigger>
+                                      <DropdownMenuContent align="end">
+                                        <AlertDialogTrigger asChild>
+                                          <DropdownMenuItem className="text-red-600 dark:text-red-400 focus:text-red-600 dark:focus:text-red-400 focus:bg-red-50 dark:focus:bg-red-950/20 cursor-pointer">
+                                            <Unplug className="w-4 h-4 mr-2" />
+                                            Disconnect
+                                          </DropdownMenuItem>
+                                        </AlertDialogTrigger>
+                                      </DropdownMenuContent>
+                                    </DropdownMenu>
+                                    <AlertDialogContent>
+                                      <AlertDialogHeader>
+                                        <AlertDialogTitle className="flex items-center gap-2">
+                                          <AlertTriangle className="w-5 h-5 text-amber-500" />
+                                          Disconnect Gmail Account
+                                        </AlertDialogTitle>
+                                        <AlertDialogDescription>
+                                          Are you sure you want to disconnect <strong>{connection.email}</strong>? 
+                                          You'll need to reconnect this account to send emails from it.
+                                        </AlertDialogDescription>
+                                      </AlertDialogHeader>
+                                      <AlertDialogFooter>
+                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                        <AlertDialogAction
+                                          onClick={() => onDisconnectGmail(connection.email)}
+                                          className="bg-red-600 text-white hover:bg-red-700 dark:bg-red-600 dark:hover:bg-red-500 dark:text-white"
+                                        >
+                                          <Unplug className="w-4 h-4 mr-2" />
+                                          Disconnect
+                                        </AlertDialogAction>
+                                      </AlertDialogFooter>
+                                    </AlertDialogContent>
+                                  </AlertDialog>
+                                </div>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                        
+                        <Separator />
+                        
+                        <Button 
+                          onClick={onConnectGmail} 
+                          variant="default" 
+                          className="w-full mt-2"
+                        >
+                          <Plus className="w-4 h-4 mr-2" />
+                          Connect Another Account
+                        </Button>
+                      </>
+                    )}
                   </div>
                 </DialogContent>
               </Dialog>
@@ -365,7 +464,7 @@ export function MailingSection({
           ) : (
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
               <div className="flex-1 px-3 py-2 border border-input rounded-md bg-muted text-xs sm:text-sm text-muted-foreground min-h-[36px] flex items-center">
-                No Gmail account connected
+                Connect a Gmail
               </div>
               <Button onClick={onConnectGmail} variant="outline" size="sm" className="w-full sm:w-auto">
                 <Plus className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-2" />
@@ -376,48 +475,101 @@ export function MailingSection({
           )}
         </div>
 
-        <Separator />
-
-        {/* Recipients Section */}
-        <div className="space-y-3 sm:space-y-4">
+        {/* To Section Card */}
+        <div className="p-3 bg-muted/30 rounded-lg border">
+          <Label className="text-sm font-medium mb-2 block">To:</Label>
           <EmailInputField
             label="To"
             emails={toEmails}
             input={toInput}
             setInput={setToInput}
             setEmails={setToEmails}
-            placeholder="Enter email address (e.g., user@example.com)"
+            placeholder="Enter email address"
           />
+        </div>
 
+        {/* CC Section Card */}
+        <div className="p-3 bg-muted/30 rounded-lg border">
+          <div className="flex items-center justify-between mb-2">
+            <Label className="text-sm font-medium">CC:</Label>
+            {!showCc && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleToggleCc}
+                className="h-6 px-2 text-xs text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+              >
+                <Plus className="w-3 h-3 mr-1" />
+                Add CC
+              </Button>
+            )}
+            {showCc && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleToggleCc}
+                className="h-6 px-2 text-xs text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+              >
+                <X className="w-3 h-3 mr-1" />
+                Remove CC
+              </Button>
+            )}
+          </div>
           <EmailInputField
             label="CC"
             emails={ccEmails}
             input={ccInput}
             setInput={setCcInput}
             setEmails={setCcEmails}
-            placeholder="Enter email address (e.g., user@example.com)"
-            onToggle={handleToggleCc}
+            placeholder="Enter email address"
             showField={showCc}
-            canCollapse={true}
+            canCollapse={false}
           />
+        </div>
 
+        {/* BCC Section Card */}
+        <div className="p-3 bg-muted/30 rounded-lg border">
+          <div className="flex items-center justify-between mb-2">
+            <Label className="text-sm font-medium">BCC:</Label>
+            {!showBcc && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleToggleBcc}
+                className="h-6 px-2 text-xs text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+              >
+                <Plus className="w-3 h-3 mr-1" />
+                Add BCC
+              </Button>
+            )}
+            {showBcc && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleToggleBcc}
+                className="h-6 px-2 text-xs text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+              >
+                <X className="w-3 h-3 mr-1" />
+                Remove BCC
+              </Button>
+            )}
+          </div>
           <EmailInputField
             label="BCC"
             emails={bccEmails}
             input={bccInput}
             setInput={setBccInput}
             setEmails={setBccEmails}
-            placeholder="Enter email address (e.g., user@example.com)"
-            onToggle={handleToggleBcc}
+            placeholder="Enter email address"
             showField={showBcc}
-            canCollapse={true}
+            canCollapse={false}
           />
         </div>
-      </CardContent>
+      </div>
 
       {/* Warning/Info Messages at Bottom */}
       {gmailConnections.length === 0 && (
-        <div className="p-4 pt-10">
+        <div className="p-4 pt-2">
           <div className="p-3 bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-lg">
             <div className="flex items-center justify-center gap-2">
               <AlertTriangle className="w-4 h-4 text-amber-600 dark:text-amber-400 flex-shrink-0" />
@@ -430,7 +582,7 @@ export function MailingSection({
       )}
       
       {gmailConnections.length > 0 && toEmails.length === 0 && (
-        <div className="p-4 pt-10">
+        <div className="p-4 pt-2">
           <div className="p-3 bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-lg">
             <div className="flex items-center justify-center gap-2">
               <Info className="w-4 h-4 text-blue-600 dark:text-blue-400 flex-shrink-0" />
@@ -441,6 +593,6 @@ export function MailingSection({
           </div>
         </div>
       )}
-    </Card>
+    </div>
   )
 } 

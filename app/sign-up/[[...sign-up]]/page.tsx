@@ -116,8 +116,12 @@ export default function SignUpPage() {
         <div className="w-full max-w-md mx-auto">
           {/* Logo */}
           <div className="flex justify-center mb-8">
-            <div className="w-16 h-16 bg-white rounded-2xl shadow-sm flex items-center justify-center border border-gray-100">
-              <div className="w-10 h-10 rounded-full border-4 border-gray-800 border-t-gray-300"></div>
+            <div className="w-16 h-16 bg-black rounded-2xl shadow-sm flex items-center justify-center border border-gray-100">
+              <img 
+                src="/Email Template App Logo Jun 24 2025 (1).png" 
+                alt="Template.io" 
+                className="w-12 h-12 object-contain"
+              />
             </div>
           </div>
 

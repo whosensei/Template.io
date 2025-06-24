@@ -18,7 +18,11 @@ export function Navbar() {
           {/* Left side - Logo and brand */}
           <div className="flex items-center gap-4">
             <div className="w-10 h-10 bg-gradient-to-br from-gray-900 to-black dark:from-white dark:to-gray-100 rounded-xl flex items-center justify-center shadow-md hover:shadow-lg transition-all duration-200 hover:scale-105">
-              <Mail className="w-5 h-5 text-white dark:text-black" />
+              <img 
+                src="/Email Template App Logo Jun 24 2025 (1).png" 
+                alt="Template.io" 
+                className="w-6 h-6 object-contain"
+              />
             </div>
             <div className="flex flex-col">
               <span className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">Template.io</span>

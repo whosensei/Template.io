@@ -4,9 +4,8 @@ import React, { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Separator } from '@/components/ui/separator'
-import { Plus, X, Lock, Settings } from 'lucide-react'
+import { Badge } from '@/components/ui/badge'
+import { Plus, X, Lock, Edit } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 interface VariableFormProps {
@@ -19,6 +18,9 @@ interface VariableFormProps {
   isAdding?: boolean
   removingVariable?: string
   className?: string
+  showValues?: boolean
+  showAddSection?: boolean
+  useDottedContainer?: boolean
 }
 
 export function VariableForm({
@@ -30,10 +32,14 @@ export function VariableForm({
   disabled = false,
   isAdding = false,
   removingVariable,
-  className
+  className,
+  showValues = true,
+  showAddSection = true,
+  useDottedContainer = false
 }: VariableFormProps) {
   const [newVarName, setNewVarName] = useState('')
   const [error, setError] = useState('')
+  const [editingVariable, setEditingVariable] = useState<string | null>(null)
 
   const handleAddVariable = () => {
     const trimmedName = newVarName.trim()
@@ -63,104 +69,168 @@ export function VariableForm({
     return templateDefinedVariables.has(variableName)
   }
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      handleAddVariable()
+    }
+  }
+
+  const handleEditVariable = (variableName: string) => {
+    if (showValues) {
+      setEditingVariable(variableName)
+    }
+  }
+
   return (
-    <Card className={cn("w-full", className)}>
-      <CardHeader className="pb-8 pt-2 px-0">
-        <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
-          <Settings className="w-4 h-4 sm:w-5 sm:h-5" />
-          Variables
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-3 sm:space-y-4 p-0">
-        {/* Variables List */}
-        {Object.entries(variables).length > 0 && (
-          <div className="space-y-3">
-            {Object.entries(variables).map(([name, value]) => {
-              const isTemplateDefined = isVariableTemplateDefined(name)
-              const isRemoving = removingVariable === name
-              
-              return (
-                <div key={name} className="grid grid-cols-1 sm:grid-cols-[120px_1fr_auto] gap-2 sm:gap-3 items-start sm:items-center w-full">
-                  <div className="min-w-0">
-                    <Label htmlFor={`var-${name}`} className="text-xs sm:text-sm font-medium text-gray-700 dark:text-zinc-300 truncate block" title={name}>
-                      {name}
-                    </Label>
-                  </div>
-                  <div className="min-w-0 sm:col-span-1">
-                    <Input
-                      id={`var-${name}`}
-                      value={value}
-                      onChange={(e) => onVariableChange(name, e.target.value)}
-                      className="w-full text-sm"
-                      disabled={disabled}
-                      placeholder="Enter value..."
-                    />
-                  </div>
-                  <div className="w-9 flex justify-center sm:justify-end flex-shrink-0 sm:ml-auto">
-                    {isTemplateDefined ? (
-                      <div className="w-9 h-9 flex items-center justify-center text-gray-400 dark:text-zinc-500" title="Template-defined variable">
-                        <Lock className="w-3 h-3 sm:w-4 sm:h-4" />
-                      </div>
-                    ) : (
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => onRemoveVariable(name)}
-                        className="w-9 h-9 p-0 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 dark:hover:text-red-400"
-                        title={`Remove ${name} variable`}
-                        disabled={disabled || isRemoving}
-                      >
-                        <X className="w-3 h-3 sm:w-4 sm:h-4" />
-                      </Button>
-                    )}
-                  </div>
-                </div>
-              )
-            })}
-          </div>
-        )}
-        
-        {Object.entries(variables).length > 0 && <Separator />}
-        
-        {/* Add New Variable */}
+    <div className={cn("w-full space-y-4", className)}>
+      {/* Current Variables */}
+      {Object.keys(variables).length > 0 && (
         <div className="space-y-3">
-          <Label className="text-xs sm:text-sm font-medium text-gray-700 dark:text-zinc-300">Add New Variable</Label>
-          <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 items-stretch sm:items-start w-full">
-            <div className="min-w-0 flex-1">
-              <Input
-                value={newVarName}
-                onChange={(e) => {
-                  setNewVarName(e.target.value)
-                  setError('')
-                }}
-                placeholder="Variable name"
-                className="w-full text-sm"
-                disabled={disabled}
-              />
-              {error && (
-                <p className="text-xs sm:text-sm text-red-600 dark:text-red-400 mt-1 ml-1">{error}</p>
-              )}
-            </div>
+          <div className="text-sm font-medium text-muted-foreground">
+            Variables
+          </div>
+          
+          <div className={useDottedContainer ? "min-h-[80px] p-3 border-2 border-dashed border-muted rounded-lg" : ""}>
+            {showValues ? (
+              // Full variable editing with values
+              <div className="space-y-3">
+                {Object.entries(variables).map(([name, value]) => {
+                  const isTemplateDefined = isVariableTemplateDefined(name)
+                  const isRemoving = removingVariable === name
+                  const isEditing = editingVariable === name
+                  
+                  return (
+                    <div key={name} className="flex items-center gap-3 p-3 bg-muted/30 rounded-lg border">
+                      <div className="min-w-0 flex-1">
+                        <Label className="text-sm font-medium mb-2 block">{name}</Label>
+                        {isEditing ? (
+                          <Input
+                            value={value}
+                            onChange={(e) => onVariableChange(name, e.target.value)}
+                            className="h-8 text-sm"
+                            disabled={disabled}
+                            placeholder="Enter value..."
+                            onBlur={() => setEditingVariable(null)}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter' || e.key === 'Escape') {
+                                setEditingVariable(null)
+                              }
+                            }}
+                            autoFocus
+                          />
+                        ) : (
+                          <div 
+                            className="h-8 px-3 py-1 bg-background border rounded-md flex items-center cursor-pointer hover:bg-muted/50 transition-colors"
+                            onClick={() => !disabled && handleEditVariable(name)}
+                          >
+                            <span className="text-sm text-muted-foreground flex-1">
+                              {value || 'Click to edit...'}
+                            </span>
+                            <Edit className="w-3 h-3 text-muted-foreground/50" />
+                          </div>
+                        )}
+                      </div>
+                      
+                      <div className="flex-shrink-0">
+                        {!isTemplateDefined ? (
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => onRemoveVariable(name)}
+                            className="h-8 w-8 p-0 hover:bg-red-100 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400"
+                            title={`Remove ${name} variable`}
+                            disabled={disabled || isRemoving}
+                          >
+                            <X className="w-4 h-4" />
+                          </Button>
+                        ) : (
+                          <div className="h-8 w-8 flex items-center justify-center" title="Template-defined variable">
+                            <Lock className="w-4 h-4 text-muted-foreground" />
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            ) : (
+              // Simple variable badges without values (for template editing)
+              <div className="flex flex-wrap gap-2">
+                {Object.keys(variables).map((name) => {
+                  const isTemplateDefined = isVariableTemplateDefined(name)
+                  const isRemoving = removingVariable === name
+                  
+                  return (
+                    <Badge
+                      key={name}
+                      variant="secondary"
+                      className="h-8 px-3 py-1 text-sm font-medium flex items-center gap-2 bg-muted/50 hover:bg-muted/70 transition-colors"
+                    >
+                      <span>{name}</span>
+                      {!isTemplateDefined ? (
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => onRemoveVariable(name)}
+                          className="h-4 w-4 p-0 ml-1 hover:bg-red-100 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 rounded-full"
+                          title={`Remove ${name} variable`}
+                          disabled={disabled || isRemoving}
+                        >
+                          <X className="w-3 h-3" />
+                        </Button>
+                      ) : (
+                        <span title="Template-defined variable">
+                          <Lock className="w-3 h-3 text-muted-foreground" />
+                        </span>
+                      )}
+                    </Badge>
+                  )
+                })}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+      
+      {/* Add New Variable */}
+      {showAddSection && (
+        <div className="space-y-2">
+          <div className="flex gap-2">
+            <Input
+              value={newVarName}
+              onChange={(e) => {
+                setNewVarName(e.target.value)
+                setError('')
+              }}
+              placeholder="Add variable name..."
+              className="flex-1 h-9 text-sm"
+              disabled={disabled}
+              onKeyDown={handleKeyDown}
+            />
             <Button
               type="button"
               onClick={handleAddVariable}
               disabled={disabled || !newVarName.trim()}
-              className="flex-shrink-0 w-full sm:w-auto text-xs sm:text-sm h-10"
+              size="sm"
+              className="h-9"
             >
-              <Plus className="w-4 h-4 mr-1" />
-              <span className="sm:hidden">Add Variable</span>
-              <span className="hidden sm:inline">Add</span>
+              <Plus className="w-4 h-4" />
             </Button>
           </div>
+          {error && (
+            <p className="text-xs text-red-600 dark:text-red-400">{error}</p>
+          )}
         </div>
+      )}
 
-        {Object.entries(variables).length === 0 && (
-          <p className="text-xs sm:text-sm text-gray-500 text-center py-4">
-            No variables defined. Add variables to personalize your templates.
-          </p>
-        )}
-      </CardContent>
-    </Card>
+      {Object.keys(variables).length === 0 && (
+        <div className="text-center py-6 px-4 border-2 border-dashed border-muted rounded-lg">
+          <p className="text-sm text-muted-foreground mb-1">No variables yet</p>
+          <p className="text-xs text-muted-foreground/60">Variables from your template will appear here</p>
+        </div>
+      )}
+    </div>
   )
 }

@@ -60,7 +60,11 @@ export function LandingPage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6 pt-8 max-w-4xl mx-auto font-['Inter',sans-serif]">
               <div className="group text-center space-y-3 p-4 rounded-2xl hover:bg-white/50 transition-all duration-300">
                 <div className="w-12 h-12 bg-gradient-to-br from-gray-900 to-gray-700 rounded-2xl flex items-center justify-center mx-auto group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-lg">
-                  <Mail className="h-6 w-6 text-white" />
+                  <img 
+                    src="/Email Template App Logo Jun 24 2025 (1).png" 
+                    alt="Template.io" 
+                    className="w-7 h-7 object-contain"
+                  />
                 </div>
                 <h3 className="font-semibold text-gray-900">Template Library</h3>
                 <p className="text-gray-600 text-sm leading-relaxed">Build and organize your email templates</p>
@@ -176,7 +180,11 @@ export function LandingPage() {
               {/* Brand */}
               <div className="flex items-center space-x-3">
                 <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
-                  <Mail className="h-5 w-5 text-black" />
+                  <img 
+                    src="/Email Template App Logo Jun 24 2025 (1).png" 
+                    alt="Template.io" 
+                    className="w-5 h-5 object-contain"
+                  />
                 </div>
                 <span className="font-bold text-white text-lg">Template</span>
               </div>

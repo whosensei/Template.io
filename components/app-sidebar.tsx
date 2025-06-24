@@ -81,7 +81,11 @@ export function AppSidebar({
         {/* App Brand */}
         <div className="flex items-center gap-3 p-4">
           <div className="w-8 h-8 bg-gradient-to-br from-gray-900 to-black dark:from-white dark:to-gray-100 rounded-lg flex items-center justify-center">
-            <Mail className="w-4 h-4 text-white dark:text-black" />
+            <img 
+              src="/Email Template App Logo Jun 24 2025 (1).png" 
+              alt="Template.io" 
+              className="w-5 h-5 object-contain"
+            />
           </div>
           <div>
             <h1 className="text-lg font-bold text-gray-900 dark:text-white">Template.io</h1>

@@ -70,6 +70,30 @@ export function useGmailConnections() {
     }
   }, [])
 
+  const disconnectGmail = useCallback(async (email: string) => {
+    try {
+      const response = await fetch('/api/gmail/connections', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || 'Failed to disconnect Gmail account')
+      }
+
+      toast.success(`Disconnected ${email}`)
+      // Refresh connections after disconnecting
+      await fetchConnections()
+    } catch (error) {
+      console.error('Error disconnecting Gmail:', error)
+      toast.error('Failed to disconnect Gmail account')
+    }
+  }, [fetchConnections])
+
   useEffect(() => {
     fetchConnections()
   }, [fetchConnections])
@@ -118,6 +142,7 @@ export function useGmailConnections() {
     loading,
     connecting,
     connectGmail,
+    disconnectGmail,
     refetchConnections: fetchConnections,
   }
 }

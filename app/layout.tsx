@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   title: 'Template',
   description: 'Professional email template management system for job applications',
   icons: {
-    icon: "/favicon.ico",
+    icon: "/Email Template App Logo Jun 24 2025 (1).png",
   },
 };
 
@@ -34,6 +34,51 @@ export default function RootLayout({
             {children}
             <Toaster />
             <Analytics />
+            <script
+              dangerouslySetInnerHTML={{
+                __html: `
+                  (function() {
+                    let scrollTimeout;
+                    
+                    function addScrollListeners(element) {
+                      if (!element || element.hasScrollListener) return;
+                      element.hasScrollListener = true;
+                      
+                      element.addEventListener('scroll', function() {
+                        this.classList.add('is-scrolling');
+                        clearTimeout(scrollTimeout);
+                        scrollTimeout = setTimeout(() => {
+                          this.classList.remove('is-scrolling');
+                        }, 1000);
+                      });
+                    }
+                    
+                    // Add listeners to existing scrollable elements
+                    function initScrollListeners() {
+                      const scrollableElements = document.querySelectorAll('*');
+                      scrollableElements.forEach(element => {
+                        const style = window.getComputedStyle(element);
+                        if (style.overflow === 'auto' || style.overflow === 'scroll' || 
+                            style.overflowY === 'auto' || style.overflowY === 'scroll' ||
+                            style.overflowX === 'auto' || style.overflowX === 'scroll') {
+                          addScrollListeners(element);
+                        }
+                      });
+                    }
+                    
+                    // Initialize on DOM ready
+                    if (document.readyState === 'loading') {
+                      document.addEventListener('DOMContentLoaded', initScrollListeners);
+                    } else {
+                      initScrollListeners();
+                    }
+                    
+                    // Re-initialize periodically for dynamic content
+                    setInterval(initScrollListeners, 2000);
+                  })();
+                `
+              }}
+            />
           </ThemeProvider>
         </SessionProvider>
       </body>
