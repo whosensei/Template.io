@@ -50,6 +50,20 @@
       "when": 1750693676103,
       "tag": "0006_safe_squadron_supreme",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1750753511482,
+      "tag": "0007_goofy_carmella_unuscione",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1750756098797,
+      "tag": "0008_massive_thunderbolt",
+      "breakpoints": true
     }
   ]
 }

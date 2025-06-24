@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { auth } from '@clerk/nextjs/server'
+import { auth } from '@/lib/auth'
 import { TemplateService } from '@/lib/db/templates'
 
 // In-memory cache for templates per user (persists during serverless container lifecycle)
@@ -19,16 +19,18 @@ export async function GET() {
   const startTime = Date.now()
   
   try {
-    const { userId } = await auth()
+    const session = await auth()
     
-    console.log('[GET /api/templates] Clerk userId:', userId)
+    console.log('[GET /api/templates] NextAuth userId:', session?.user?.id)
     
-    if (!userId) {
+    if (!session?.user?.id) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
       )
     }
+    
+    const userId = session.user.id
 
     // Check cache first
     const now = Date.now()
@@ -88,16 +90,18 @@ export async function POST(request: NextRequest) {
   const startTime = Date.now()
   
   try {
-    const { userId } = await auth()
+    const session = await auth()
     
-    console.log('[POST /api/templates] Clerk userId:', userId)
+    console.log('[POST /api/templates] NextAuth userId:', session?.user?.id)
     
-    if (!userId) {
+    if (!session?.user?.id) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
       )
     }
+    
+    const userId = session.user.id
 
     const body = await request.json()
     const { name, content, variables } = body

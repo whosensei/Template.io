@@ -1,16 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { auth } from '@clerk/nextjs/server'
+import { auth } from '@/lib/auth'
 import { db } from '@/lib/db'
 import { userPreferences } from '@/lib/db/schema'
 import { eq } from 'drizzle-orm'
 
 export async function GET() {
   try {
-    const { userId } = await auth()
+    const session = await auth()
     
-    if (!userId) {
+    if (!session?.user?.id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
+    
+    const userId = session.user.id
 
     // Get existing preferences or create default ones
     let preferences = await db
@@ -44,11 +46,13 @@ export async function GET() {
 
 export async function PATCH(request: NextRequest) {
   try {
-    const { userId } = await auth()
+    const session = await auth()
     
-    if (!userId) {
+    if (!session?.user?.id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
+    
+    const userId = session.user.id
 
     const body = await request.json()
     const { highlightColor } = body

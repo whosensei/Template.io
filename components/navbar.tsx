@@ -1,10 +1,16 @@
 "use client"
 
 import { Mail } from "lucide-react"
-import { UserButton } from "@clerk/nextjs"
+import { useSession, signOut } from "next-auth/react"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Button } from "@/components/ui/button"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { LogOut } from "lucide-react"
 import { ThemeToggle } from "./theme-toggle"
 
 export function Navbar() {
+  const { data: session } = useSession()
+
   return (
     <div className="top-0 z-50 w-full bg-white/90 dark:bg-black/90 backdrop-blur-md pt-4">
       <div className="max-w-7xl mx-auto px-4 py-3">
@@ -26,54 +32,34 @@ export function Navbar() {
               <ThemeToggle />
             </div>
             <div className="w-px h-8 bg-gradient-to-b from-transparent via-gray-300 dark:via-zinc-600 to-transparent"></div>
-            <div className="pt-2" >
-              <UserButton 
-                appearance={{
-                  elements: {
-                    userButtonAvatarBox: "w-8 h-8 hover:scale-105 transition-transform duration-200 shadow-md hover:shadow-lg",
-                    userButtonPopoverCard: "shadow-2xl border border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 backdrop-blur-md rounded-xl",
-                    userButtonPopoverMain: "bg-white dark:bg-zinc-900",
-                    userButtonPopoverActions: "bg-white dark:bg-zinc-900 border-t border-gray-100 dark:border-zinc-800",
-                    userButtonPopoverActionButton: "hover:bg-gray-50 dark:hover:bg-zinc-800 dark:text-zinc-200 transition-colors duration-200 text-gray-900 dark:bg-zinc-900",
-                    userButtonPopoverActionButtonText: "text-gray-900 dark:text-zinc-200 font-medium",
-                    userButtonPopoverActionButtonIcon: "text-gray-600 dark:text-zinc-400",
-                    userButtonPopoverFooter: "hidden",
-                    avatarBox: "rounded-full ring-2 ring-white dark:ring-zinc-700 shadow-lg",
-                    userPreview: "bg-white dark:bg-zinc-900 p-4",
-                    userPreviewMainIdentifier: "text-gray-900 dark:text-white font-semibold text-sm",
-                    userPreviewSecondaryIdentifier: "text-gray-600 dark:text-zinc-400 text-xs",
-                    userPreviewAvatarContainer: "bg-white dark:bg-zinc-900",
-                    userPreviewTextContainer: "bg-white dark:bg-zinc-900",
-                    userButtonPopoverContent: "bg-white dark:bg-zinc-900",
-                    modalContent: "bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-700",
-                    modalCloseButton: "text-gray-600 dark:text-zinc-400 hover:text-gray-900 dark:hover:text-white",
-                    card: "bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-700 shadow-xl",
-                    headerTitle: "text-gray-900 dark:text-white font-semibold",
-                    headerSubtitle: "text-gray-600 dark:text-zinc-400",
-                    socialButtonsBlockButton: "bg-white dark:bg-zinc-800 border border-gray-200 dark:border-zinc-600 text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-zinc-700",
-                    formButtonPrimary: "bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200",
-                    formFieldInput: "bg-white dark:bg-zinc-800 border border-gray-200 dark:border-zinc-600 text-gray-900 dark:text-white",
-                    formFieldLabel: "text-gray-700 dark:text-zinc-300",
-                    identityPreview: "bg-white dark:bg-zinc-900",
-                    identityPreviewText: "text-gray-900 dark:text-white",
-                    identityPreviewEditButton: "text-gray-600 dark:text-zinc-400 hover:text-gray-900 dark:hover:text-white"
-                  },
-                  variables: {
-                    colorPrimary: '#000000',
-                    colorBackground: '#ffffff',
-                    colorInputBackground: '#ffffff',
-                    colorInputText: '#111827',
-                    colorText: '#111827',
-                    colorTextSecondary: '#6b7280',
-                    colorDanger: '#dc2626',
-                    colorSuccess: '#16a34a',
-                    colorWarning: '#ca8a04',
-                    colorNeutral: '#6b7280',
-                    borderRadius: '12px',
-                  }
-                }}
-              />
-            </div>
+            {session?.user && (
+              <div className="pt-2">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" className="w-8 h-8 rounded-full p-0 hover:scale-105 transition-transform duration-200 shadow-md hover:shadow-lg">
+                      <Avatar className="w-8 h-8">
+                        <AvatarImage src={session.user.image || ''} alt={session.user.name || 'User'} />
+                        <AvatarFallback className="bg-black dark:bg-white text-white dark:text-black text-xs">
+                          {session.user.name?.[0] || session.user.email?.[0] || 'U'}
+                        </AvatarFallback>
+                      </Avatar>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent 
+                    align="end" 
+                    className="shadow-2xl border border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 backdrop-blur-md rounded-xl w-48"
+                  >
+                    <DropdownMenuItem 
+                      onClick={() => signOut({ callbackUrl: '/' })}
+                      className="cursor-pointer hover:bg-gray-50 dark:hover:bg-zinc-800 dark:text-zinc-200 transition-colors duration-200 text-gray-900 dark:bg-zinc-900"
+                    >
+                      <LogOut className="mr-2 h-4 w-4" />
+                      Sign out
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+            )}
           </div>
         </div>
       </div>

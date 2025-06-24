@@ -13,7 +13,7 @@
     "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
-    "@clerk/nextjs": "^6.20.2",
+    "@auth/drizzle-adapter": "^1.4.2",
     "@google-cloud/local-auth": "^3.0.1",
     "@hookform/resolvers": "^3.9.0",
     "@neondatabase/serverless": "^1.0.0",
@@ -33,6 +33,7 @@
     "@types/react-dom": "18.2.7",
     "@vercel/analytics": "^1.5.0",
     "autoprefixer": "10.4.15",
+    "bcryptjs": "^3.0.2",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "date-fns": "^3.6.0",
@@ -43,7 +44,9 @@
     "eslint-config-next": "13.5.1",
     "googleapis": "^150.0.1",
     "lucide-react": "^0.446.0",
+    "nanoid": "^5.1.5",
     "next": "^15.3.3",
+    "next-auth": "^5.0.0-beta.22",
     "next-themes": "^0.3.0",
     "postcss": "8.4.30",
     "react": "18.2.0",

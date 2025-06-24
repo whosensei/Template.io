@@ -1,14 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { auth } from '@clerk/nextjs/server'
+import { auth } from '@/lib/auth'
 import { gmailService } from '@/lib/gmail'
 
 export async function POST(request: NextRequest) {
   try {
-    const { userId } = await auth()
+    const session = await auth()
     
-    if (!userId) {
+    if (!session?.user?.id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
+    
+    const userId = session.user.id
 
     console.log('Creating Gmail auth URL for user:', userId)
     const authUrl = gmailService.getAuthUrl(userId)

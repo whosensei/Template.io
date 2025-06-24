@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { auth } from '@clerk/nextjs/server'
+import { auth } from '@/lib/auth'
 import { TemplateService } from '@/lib/db/templates'
 
 // Performance monitoring
@@ -17,14 +17,16 @@ export async function GET(
   const startTime = Date.now()
   
   try {
-    const { userId } = await auth()
+    const session = await auth()
     
-    if (!userId) {
+    if (!session?.user?.id) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
       )
     }
+    
+    const userId = session.user.id
 
     const { id } = await params
     
@@ -66,14 +68,16 @@ export async function PUT(
   const startTime = Date.now()
   
   try {
-    const { userId } = await auth()
+    const session = await auth()
     
-    if (!userId) {
+    if (!session?.user?.id) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
       )
     }
+    
+    const userId = session.user.id
 
     const { id } = await params
     const body = await request.json()
@@ -113,14 +117,16 @@ export async function DELETE(
   const startTime = Date.now()
   
   try {
-    const { userId } = await auth()
+    const session = await auth()
     
-    if (!userId) {
+    if (!session?.user?.id) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
       )
     }
+    
+    const userId = session.user.id
 
     const { id } = await params
     

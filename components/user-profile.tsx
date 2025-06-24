@@ -1,20 +1,21 @@
 "use client"
 
-import { UserButton, useUser } from '@clerk/nextjs'
+import { useSession, signOut } from 'next-auth/react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
-import { LogOut, User } from 'lucide-react'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import { LogOut, User, Settings } from 'lucide-react'
 import { useTheme } from 'next-themes'
 
 export function UserProfile() {
-  const { user, isLoaded } = useUser()
+  const { data: session, status } = useSession()
   const { theme, resolvedTheme } = useTheme()
 
   // Determine if we're in dark mode
   const isDark = resolvedTheme === 'dark'
 
-  if (!isLoaded) {
+  if (status === "loading") {
     return (
       <Card className="mb-6">
         <CardContent className="p-4">
@@ -30,9 +31,11 @@ export function UserProfile() {
     )
   }
 
-  if (!user) {
+  if (!session?.user) {
     return null
   }
+
+  const user = session.user
 
   return (
     <Card className="mb-6 border-gray-200 dark:border-gray-700 shadow-sm bg-card">
@@ -40,46 +43,51 @@ export function UserProfile() {
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <Avatar className="w-10 h-10">
-              <AvatarImage src={user.imageUrl} alt={user.fullName || 'User'} />
+              <AvatarImage src={user.image || ''} alt={user.name || 'User'} />
               <AvatarFallback className="bg-black dark:bg-white text-white dark:text-black">
-                {user.firstName?.charAt(0) || user.emailAddresses[0]?.emailAddress.charAt(0) || 'U'}
+                {user.name?.charAt(0) || user.email?.charAt(0) || 'U'}
               </AvatarFallback>
             </Avatar>
             <div className="flex-1">
               <h3 className="font-semibold text-gray-900 dark:text-gray-100">
-                {user.fullName || user.firstName || 'User'}
+                {user.name || 'User'}
               </h3>
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                {user.primaryEmailAddress?.emailAddress}
+                {user.email}
               </p>
             </div>
           </div>
           
           <div className="flex items-center space-x-2">
-            {/* Clerk's built-in UserButton with theme-aware appearance */}
-            <UserButton 
-              appearance={{
-                elements: {
-                  avatarBox: "w-8 h-8",
-                  userButtonPopoverCard: isDark 
-                    ? "shadow-lg border border-gray-800 bg-gray-900" 
-                    : "shadow-lg border border-gray-200 bg-white",
-                  userButtonPopoverActionButton: isDark 
-                    ? "hover:bg-white/10 text-gray-300 hover:text-white transition-colors" 
-                    : "hover:bg-black/10 text-gray-600 hover:text-black transition-colors",
-                  userButtonPopoverActionButtonText: isDark ? "text-gray-100" : "text-gray-700",
-                  userButtonPopoverFooter: "hidden", // Hide the footer
-                },
-                variables: {
-                  colorPrimary: isDark ? '#ffffff' : '#000000',
-                  colorBackground: isDark ? '#141517' : '#ffffff',
-                  colorText: isDark ? '#f3f4f6' : '#000000',
-                  colorTextSecondary: isDark ? '#d1d5db' : '#666666',
-                  borderRadius: '6px',
-                }
-              }}
-              afterSignOutUrl="/"
-            />
+            {/* Custom user dropdown menu */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button 
+                  variant="ghost" 
+                  size="sm"
+                  className="w-8 h-8 rounded-full p-0 hover:bg-gray-100 dark:hover:bg-gray-800"
+                >
+                  <Avatar className="w-8 h-8">
+                    <AvatarImage src={user.image || ''} alt={user.name || 'User'} />
+                    <AvatarFallback className="bg-black dark:bg-white text-white dark:text-black text-xs">
+                      {user.name?.charAt(0) || user.email?.charAt(0) || 'U'}
+                    </AvatarFallback>
+                  </Avatar>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent 
+                align="end" 
+                className={`w-48 ${isDark ? 'shadow-lg border border-gray-800 bg-gray-900' : 'shadow-lg border border-gray-200 bg-white'}`}
+              >
+                <DropdownMenuItem 
+                  onClick={() => signOut({ callbackUrl: '/' })}
+                  className={`cursor-pointer ${isDark ? 'hover:bg-white/10 text-gray-300 hover:text-white' : 'hover:bg-black/10 text-gray-600 hover:text-black'}`}
+                >
+                  <LogOut className="mr-2 h-4 w-4" />
+                  Sign out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
       </CardContent>

@@ -1,14 +1,14 @@
 "use client";
 
-import { useUser } from '@clerk/nextjs'
+import { useSession } from 'next-auth/react'
 import { TemplateManagerContainer } from "@/components/template-manager-container"
 import { LandingPage } from "@/components/landing-page"
 
 export default function Home() {
-  const { isSignedIn, isLoaded } = useUser()
+  const { data: session, status } = useSession()
 
   // Show loading state while checking authentication
-  if (!isLoaded) {
+  if (status === "loading") {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center space-y-4">
@@ -20,7 +20,7 @@ export default function Home() {
   }
 
   // Show landing page for unauthenticated users
-  if (!isSignedIn) {
+  if (status === "unauthenticated") {
     return <LandingPage />
   }
 

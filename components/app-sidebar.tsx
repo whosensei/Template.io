@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { Mail, Plus, Edit, Trash2, Settings, LogOut, Sun, Moon } from "lucide-react"
-import { useUser, SignOutButton } from "@clerk/nextjs"
+import { useSession, signOut } from "next-auth/react"
 import { useTheme } from "next-themes"
 import {
   Sidebar,
@@ -63,8 +63,10 @@ export function AppSidebar({
   isDeleting = false,
   isLoading = false
 }: AppSidebarProps) {
-  const { user } = useUser()
+  const { data: session } = useSession()
   const { theme, setTheme } = useTheme()
+  
+  const user = session?.user
 
   const selectedTemplate = templates.find(t => t.id === selectedTemplateId)
   const displayName = currentTemplateName || selectedTemplate?.name || "No template selected"
@@ -222,32 +224,31 @@ export function AppSidebar({
                 {/* Left side - Avatar, Name, Email */}
                 <div className="flex items-center gap-3 flex-1 min-w-0">
                   <Avatar className="w-9 h-9 ring-2 ring-gray-200 dark:ring-gray-700">
-                    <AvatarImage src={user.imageUrl} alt={user.fullName || user.username || ""} />
+                    <AvatarImage src={user.image || ''} alt={user.name || ""} />
                     <AvatarFallback className="text-sm font-medium bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800">
-                      {user.fullName?.[0] || user.username?.[0] || user.primaryEmailAddress?.emailAddress[0] || "U"}
+                      {user.name?.[0] || user.email?.[0] || "U"}
                     </AvatarFallback>
                   </Avatar>
                   <div className="flex-1 min-w-0">
                     <div className="text-sm font-medium text-gray-900 dark:text-white truncate">
-                      {user.fullName || user.username || "User"}
+                      {user.name || "User"}
                     </div>
                     <div className="text-xs text-gray-500 dark:text-gray-400 truncate">
-                      {user.primaryEmailAddress?.emailAddress}
+                      {user.email}
                     </div>
                   </div>
                 </div>
                 
                 {/* Right side - Logout Button */}
-                <SignOutButton>
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
-                    className="h-8 w-8 p-0 hover:bg-red-50 dark:hover:bg-red-950/50 hover:text-red-600 dark:hover:text-red-400 transition-colors"
-                    title="Sign Out"
-                  >
-                    <LogOut className="w-4 h-4" />
-                  </Button>
-                </SignOutButton>
+                <Button 
+                  onClick={() => signOut({ callbackUrl: '/' })}
+                  variant="ghost" 
+                  size="sm" 
+                  className="h-8 w-8 p-0 hover:bg-red-50 dark:hover:bg-red-950/50 hover:text-red-600 dark:hover:text-red-400 transition-colors"
+                  title="Sign Out"
+                >
+                  <LogOut className="w-4 h-4" />
+                </Button>
               </div>
             </SidebarGroupContent>
           </SidebarGroup>
