@@ -192,9 +192,6 @@ export default function TermsOfService() {
 
           <h2 className="text-2xl font-semibold text-black mt-12 mb-6">Governing Law and Disputes</h2>
           <p className="text-gray-700 leading-relaxed mb-6">
-            These Terms are governed by and construed in accordance with the laws of [Your Jurisdiction], without regard to conflict of law principles.
-          </p>
-          <p className="text-gray-700 leading-relaxed mb-6">
             Any disputes arising from these Terms or your use of Template will be resolved through binding arbitration, except that either party may seek injunctive relief in court for violations of intellectual property rights.
           </p>
           <p className="text-gray-700 leading-relaxed mb-8">
@@ -206,8 +203,7 @@ export default function TermsOfService() {
             If you have questions about these Terms of Service, please contact us:
           </p>
           <ul className="list-disc list-inside text-gray-700 leading-relaxed space-y-2 mb-8">
-            <li><strong>Email:</strong> legal@template.io</li>
-            <li><strong>Support:</strong> support@template.io</li>
+            <li><strong> X :</strong> <a href="https://x.com/dipesshhhh" target="_blank" rel="noopener noreferrer">Contact me on X</a></li>
           </ul>
           <p className="text-gray-700 leading-relaxed mb-12">
             We will respond to legal inquiries within 5 business days.

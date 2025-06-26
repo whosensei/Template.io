@@ -164,8 +164,7 @@ export default function PrivacyPolicy() {
             If you have any questions about this Privacy Policy or our data practices, please contact us:
           </p>
           <ul className="list-disc list-inside text-gray-700 leading-relaxed space-y-2 mb-8">
-            <li><strong>Email:</strong> privacy@template.io</li>
-            <li><strong>Support:</strong> support@template.io</li>
+            <li><strong> X :</strong> <a href="https://x.com/dipesshhhh" target="_blank" rel="noopener noreferrer">Contact me on X</a></li>
           </ul>
           <p className="text-gray-700 leading-relaxed mb-12">
             We are committed to resolving any privacy concerns promptly and transparently.
