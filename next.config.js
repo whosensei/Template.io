@@ -7,7 +7,8 @@ const nextConfig = {
   
   // External packages for server components (moved out of experimental)
   serverExternalPackages: [
-    '@neondatabase/serverless'
+    '@neondatabase/serverless',
+    'bcryptjs'
   ],
   
   // Performance optimizations (stable features only)
