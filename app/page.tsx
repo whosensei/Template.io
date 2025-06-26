@@ -1,26 +1,13 @@
-"use client";
-
-import { useSession } from 'next-auth/react'
+import { auth } from "@/lib/auth"
 import { TemplateManagerContainer } from "@/components/template-manager-container"
 import { LandingPage } from "@/components/landing-page"
 
-export default function Home() {
-  const { data: session, status } = useSession()
-
-  // Show loading state while checking authentication
-  if (status === "loading") {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center space-y-4">
-          <div className="w-8 h-8 border-2 border-gray-300 border-t-black rounded-full animate-spin mx-auto"></div>
-          <p className="text-gray-600">Loading...</p>
-        </div>
-      </div>
-    )
-  }
+export default async function Home() {
+  // Get session on the server side
+  const session = await auth()
 
   // Show landing page for unauthenticated users
-  if (status === "unauthenticated") {
+  if (!session) {
     return <LandingPage />
   }
 
