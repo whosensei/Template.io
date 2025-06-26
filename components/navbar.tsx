@@ -19,7 +19,7 @@ export function Navbar() {
           <div className="flex items-center gap-4">
             <div className="w-10 h-10 bg-gradient-to-br from-gray-900 to-black dark:from-white dark:to-gray-100 rounded-xl flex items-center justify-center shadow-md hover:shadow-lg transition-all duration-200 hover:scale-105">
               <img 
-                src="/Email Template App Logo Jun 24 2025 (1).png" 
+                src="/Email Template App Logo Jun 24 2025 (2).png" 
                 alt="Template.io" 
                 className="w-6 h-6 object-contain"
               />

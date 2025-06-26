@@ -82,7 +82,7 @@ export function AppSidebar({
         <div className="flex items-center gap-3 p-4">
           <div className="w-8 h-8 bg-gradient-to-br from-gray-900 to-black dark:from-white dark:to-gray-100 rounded-lg flex items-center justify-center">
             <img 
-              src="/Email Template App Logo Jun 24 2025 (1).png" 
+              src="/Email Template App Logo Jun 24 2025 (2).png" 
               alt="Template.io" 
               className="w-5 h-5 object-contain"
             />

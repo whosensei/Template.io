@@ -61,7 +61,7 @@ export function LandingPage() {
               <div className="group text-center space-y-3 p-4 rounded-2xl hover:bg-white/50 transition-all duration-300">
                 <div className="w-12 h-12 bg-gradient-to-br from-gray-900 to-gray-700 rounded-2xl flex items-center justify-center mx-auto group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-lg">
                   <img 
-                    src="/Email Template App Logo Jun 24 2025 (1).png" 
+                    src="/Email Template App Logo Jun 24 2025 (2).png" 
                     alt="Template.io" 
                     className="w-7 h-7 object-contain"
                   />
@@ -181,7 +181,7 @@ export function LandingPage() {
               <div className="flex items-center space-x-3">
                 <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
                   <img 
-                    src="/Email Template App Logo Jun 24 2025 (1).png" 
+                    src="/Email Template App Logo Jun 24 2025 (2).png" 
                     alt="Template.io" 
                     className="w-5 h-5 object-contain"
                   />

@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   title: 'Template',
   description: 'Professional email template management system for job applications',
   icons: {
-    icon: "/Email Template App Logo Jun 24 2025 (1).png",
+    icon: "/Email Template App Logo Jun 24 2025 (2).png",
   },
 };
 

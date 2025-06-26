@@ -8,7 +8,7 @@ export function TemplateManagerHeader() {
       <div className="flex items-center gap-3">
         <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
           <img 
-            src="/Email Template App Logo Jun 24 2025 (1).png" 
+            src="/Email Template App Logo Jun 24 2025 (2).png" 
             alt="Template.io" 
             className="w-5 h-5 object-contain"
           />

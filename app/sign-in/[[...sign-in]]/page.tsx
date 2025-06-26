@@ -98,7 +98,7 @@ export default function SignInPage() {
           <div className="flex justify-center mb-8">
             <div className="w-16 h-16 bg-black rounded-2xl shadow-sm flex items-center justify-center border border-gray-100">
               <img 
-                src="/Email Template App Logo Jun 24 2025 (1).png" 
+                src="/Email Template App Logo Jun 24 2025 (2).png" 
                 alt="Template.io" 
                 className="w-12 h-12 object-contain"
               />
