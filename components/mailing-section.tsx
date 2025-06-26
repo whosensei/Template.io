@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { useState, useCallback } from "react"
-import { Mail, Plus, X, Settings, AlertTriangle, Info, Unplug, UserX, Trash2, MoreVertical } from "lucide-react"
+import { Mail, Plus, X, Settings, AlertTriangle, Info, Unplug, Trash2, MoreVertical } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -64,6 +64,8 @@ interface MailingSectionProps {
   gmailConnections: GmailConnection[]
   onConnectGmail: () => void
   onDisconnectGmail?: (email: string) => Promise<void>
+  onReconnectGmail?: (email: string) => Promise<void>
+  onRemoveGmail?: (email: string) => Promise<void>
   isLoading?: boolean
   isSending?: boolean
   onEmailDataChange?: (emailData: {
@@ -235,6 +237,8 @@ export function MailingSection({
   gmailConnections,
   onConnectGmail,
   onDisconnectGmail,
+  onReconnectGmail,
+  onRemoveGmail,
   isLoading = false,
   isSending = false,
   onEmailDataChange,
@@ -252,18 +256,24 @@ export function MailingSection({
   const [ccInput, setCcInput] = useState("")
   const [bccInput, setBccInput] = useState("")
 
-  // Set default from email when connections are available
+  // Filter active connections for the From field
+  const activeConnections = gmailConnections.filter(conn => conn.isActive)
+
+  // Set default from email when active connections are available
   React.useEffect(() => {
-    if (gmailConnections.length > 0 && !selectedFrom) {
-      const defaultConnection = gmailConnections.find(conn => conn.isActive) || gmailConnections[0]
+    if (activeConnections.length > 0 && (!selectedFrom || !activeConnections.find(conn => conn.email === selectedFrom))) {
+      const defaultConnection = activeConnections[0]
       setSelectedFrom(defaultConnection.email)
+    } else if (activeConnections.length === 0 && selectedFrom) {
+      // Clear selected email if no active connections
+      setSelectedFrom("")
     }
-  }, [gmailConnections]) // Remove selectedFrom to prevent infinite loop
+  }, [activeConnections, selectedFrom])
 
   // Notify parent component of email data changes
   React.useEffect(() => {
     if (onEmailDataChange) {
-      const canSend = toEmails.length > 0 && selectedFrom && gmailConnections.length > 0
+      const canSend = toEmails.length > 0 && selectedFrom && activeConnections.length > 0
       onEmailDataChange({
         to: toEmails,
         cc: ccEmails,
@@ -272,7 +282,7 @@ export function MailingSection({
         canSend: canSend as boolean
       })
     }
-  }, [toEmails, ccEmails, bccEmails, selectedFrom, gmailConnections.length, onEmailDataChange])
+  }, [toEmails, ccEmails, bccEmails, selectedFrom, activeConnections.length, onEmailDataChange])
 
   const handleSend = useCallback(async () => {
     if (toEmails.length === 0) {
@@ -327,14 +337,14 @@ export function MailingSection({
         {/* From Section Card */}
         <div className="p-3 bg-muted/30 rounded-lg border">
           <Label className="text-sm font-medium mb-2 block">From:</Label>
-          {gmailConnections.length > 0 ? (
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+          {activeConnections.length > 0 ? (
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 min-w-0">
               <Select value={selectedFrom} onValueChange={handleFromChange}>
-                <SelectTrigger className="flex-1 text-xs sm:text-sm min-h-[36px]">
+                <SelectTrigger className="flex-1 text-xs sm:text-sm min-h-[36px] min-w-0">
                   <SelectValue placeholder="Select sender email" />
                 </SelectTrigger>
                 <SelectContent>
-                  {gmailConnections.map((connection) => (
+                  {activeConnections.map((connection) => (
                     <SelectItem key={connection.id} value={connection.email}>
                       <span className="truncate">{connection.email}</span>
                     </SelectItem>
@@ -343,8 +353,8 @@ export function MailingSection({
               </Select>
               <Dialog>
                 <DialogTrigger asChild>
-                  <Button variant="outline" size="sm" className="w-full sm:w-auto">
-                    <Settings className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-0" />
+                  <Button variant="outline" size="sm" className="w-full sm:w-auto sm:flex-shrink-0">
+                    <Settings className="w-3 h-3 sm:w-4 sm:h-4" />
                     <span className="sm:hidden ml-2">Settings</span>
                   </Button>
                 </DialogTrigger>
@@ -394,53 +404,106 @@ export function MailingSection({
                                 </div>
                               </div>
                                                             
-                              {connection.isActive && onDisconnectGmail && (
-                                <div className="flex-shrink-0">
-                                  <AlertDialog>
-                                    <DropdownMenu>
-                                      <DropdownMenuTrigger asChild>
-                                        <Button
-                                          variant="ghost"
-                                          size="sm"
-                                          className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground"
-                                        >
-                                          <MoreVertical className="w-4 h-4" />
-                                        </Button>
-                                      </DropdownMenuTrigger>
-                                      <DropdownMenuContent align="end">
-                                        <AlertDialogTrigger asChild>
-                                          <DropdownMenuItem className="text-red-600 dark:text-red-400 focus:text-red-600 dark:focus:text-red-400 focus:bg-red-50 dark:focus:bg-red-950/20 cursor-pointer">
+                              <div className="flex-shrink-0">
+                                {connection.isActive ? (
+                                  // Active connection - show disconnect option
+                                  onDisconnectGmail && (
+                                    <AlertDialog>
+                                      <DropdownMenu>
+                                        <DropdownMenuTrigger asChild>
+                                          <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground"
+                                          >
+                                            <MoreVertical className="w-4 h-4" />
+                                          </Button>
+                                        </DropdownMenuTrigger>
+                                        <DropdownMenuContent align="end">
+                                          <AlertDialogTrigger asChild>
+                                            <DropdownMenuItem className="text-red-600 dark:text-red-400 focus:text-red-600 dark:focus:text-red-400 focus:bg-red-50 dark:focus:bg-red-950/20 cursor-pointer">
+                                              <Unplug className="w-4 h-4 mr-2" />
+                                              Disconnect
+                                            </DropdownMenuItem>
+                                          </AlertDialogTrigger>
+                                        </DropdownMenuContent>
+                                      </DropdownMenu>
+                                      <AlertDialogContent>
+                                        <AlertDialogHeader>
+                                          <AlertDialogTitle className="flex items-center gap-2">
+                                            <AlertTriangle className="w-5 h-5 text-amber-500" />
+                                            Disconnect Gmail Account
+                                          </AlertDialogTitle>
+                                          <AlertDialogDescription>
+                                            Are you sure you want to disconnect <strong>{connection.email}</strong>? 
+                                            You'll need to reconnect this account to send emails from it.
+                                          </AlertDialogDescription>
+                                        </AlertDialogHeader>
+                                        <AlertDialogFooter>
+                                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                          <AlertDialogAction
+                                            onClick={() => onDisconnectGmail(connection.email)}
+                                            className="bg-red-600 text-white hover:bg-red-700 dark:bg-red-600 dark:hover:bg-red-500 dark:text-white"
+                                          >
                                             <Unplug className="w-4 h-4 mr-2" />
                                             Disconnect
-                                          </DropdownMenuItem>
+                                          </AlertDialogAction>
+                                        </AlertDialogFooter>
+                                      </AlertDialogContent>
+                                    </AlertDialog>
+                                  )
+                                ) : (
+                                  // Disconnected connection - show reconnect and remove options
+                                  <div className="flex gap-2">
+                                    {onReconnectGmail && (
+                                      <Button
+                                        onClick={() => onReconnectGmail(connection.email)}
+                                        variant="outline"
+                                        size="sm"
+                                        className="h-8 px-3 text-xs bg-green-50 dark:bg-green-950/20 border-green-200 dark:border-green-800 text-green-700 dark:text-green-300 hover:bg-green-100 dark:hover:bg-green-900/30"
+                                      >
+                                        <Mail className="w-3 h-3 mr-1" />
+                                        Reconnect
+                                      </Button>
+                                    )}
+                                    {onRemoveGmail && (
+                                      <AlertDialog>
+                                        <AlertDialogTrigger asChild>
+                                          <Button
+                                            variant="outline"
+                                            size="sm"
+                                            className="h-8 w-8 p-0 text-red-600 dark:text-red-400 border-red-200 dark:border-red-800 hover:bg-red-50 dark:hover:bg-red-950/20"
+                                          >
+                                            <Trash2 className="w-3 h-3" />
+                                          </Button>
                                         </AlertDialogTrigger>
-                                      </DropdownMenuContent>
-                                    </DropdownMenu>
-                                    <AlertDialogContent>
-                                      <AlertDialogHeader>
-                                        <AlertDialogTitle className="flex items-center gap-2">
-                                          <AlertTriangle className="w-5 h-5 text-amber-500" />
-                                          Disconnect Gmail Account
-                                        </AlertDialogTitle>
-                                        <AlertDialogDescription>
-                                          Are you sure you want to disconnect <strong>{connection.email}</strong>? 
-                                          You'll need to reconnect this account to send emails from it.
-                                        </AlertDialogDescription>
-                                      </AlertDialogHeader>
-                                      <AlertDialogFooter>
-                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                        <AlertDialogAction
-                                          onClick={() => onDisconnectGmail(connection.email)}
-                                          className="bg-red-600 text-white hover:bg-red-700 dark:bg-red-600 dark:hover:bg-red-500 dark:text-white"
-                                        >
-                                          <Unplug className="w-4 h-4 mr-2" />
-                                          Disconnect
-                                        </AlertDialogAction>
-                                      </AlertDialogFooter>
-                                    </AlertDialogContent>
-                                  </AlertDialog>
-                                </div>
-                              )}
+                                        <AlertDialogContent>
+                                          <AlertDialogHeader>
+                                            <AlertDialogTitle className="flex items-center gap-2">
+                                              <AlertTriangle className="w-5 h-5 text-amber-500" />
+                                              Remove Gmail Account
+                                            </AlertDialogTitle>
+                                            <AlertDialogDescription>
+                                              Are you sure you want to permanently remove <strong>{connection.email}</strong>? 
+                                              This will delete all connection data from the database and cannot be undone.
+                                            </AlertDialogDescription>
+                                          </AlertDialogHeader>
+                                          <AlertDialogFooter>
+                                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                            <AlertDialogAction
+                                              onClick={() => onRemoveGmail(connection.email)}
+                                              className="bg-red-600 text-white hover:bg-red-700 dark:bg-red-600 dark:hover:bg-red-500 dark:text-white"
+                                            >
+                                              <Trash2 className="w-4 h-4 mr-2" />
+                                              Remove Permanently
+                                            </AlertDialogAction>
+                                          </AlertDialogFooter>
+                                        </AlertDialogContent>
+                                      </AlertDialog>
+                                    )}
+                                  </div>
+                                )}
+                              </div>
                             </div>
                           ))}
                         </div>
@@ -462,14 +525,14 @@ export function MailingSection({
               </Dialog>
             </div>
           ) : (
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
-              <div className="flex-1 px-3 py-2 border border-input rounded-md bg-muted text-xs sm:text-sm text-muted-foreground min-h-[36px] flex items-center">
-                Connect a Gmail
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 min-w-0">
+              <div className="flex-1 px-3 py-2 border border-input rounded-md bg-muted text-xs sm:text-sm text-muted-foreground min-h-[36px] flex items-center min-w-0">
+                <span className="truncate">No Gmail account connected</span>
               </div>
-              <Button onClick={onConnectGmail} variant="outline" size="sm" className="w-full sm:w-auto">
-                <Plus className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-2" />
+              <Button onClick={onConnectGmail} variant="outline" size="sm" className="w-full sm:w-auto sm:flex-shrink-0">
+                <Plus className="w-3 h-3 sm:w-4 sm:h-4" />
                 <span className="sm:hidden ml-2">Connect Gmail</span>
-                <span className="hidden sm:inline">Connect Gmail</span>
+                <span className="hidden sm:inline">Connect</span>
               </Button>
             </div>
           )}
@@ -568,20 +631,22 @@ export function MailingSection({
       </div>
 
       {/* Warning/Info Messages at Bottom */}
-      {gmailConnections.length === 0 && (
+      {activeConnections.length === 0 && (
         <div className="p-4 pt-2">
           <div className="p-3 bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-lg">
             <div className="flex items-center justify-center gap-2">
               <AlertTriangle className="w-4 h-4 text-amber-600 dark:text-amber-400 flex-shrink-0" />
               <p className="text-sm text-amber-700 dark:text-amber-300 text-center">
-                Connect a Gmail account to enable sending
+                {gmailConnections.length > 0 
+                  ? "No active Gmail connections. Connect an account to enable sending" 
+                  : "Connect a Gmail account to enable sending"}
               </p>
             </div>
           </div>
         </div>
       )}
       
-      {gmailConnections.length > 0 && toEmails.length === 0 && (
+      {activeConnections.length > 0 && toEmails.length === 0 && (
         <div className="p-4 pt-2">
           <div className="p-3 bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-lg">
             <div className="flex items-center justify-center gap-2">

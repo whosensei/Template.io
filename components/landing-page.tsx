@@ -190,13 +190,23 @@ export function LandingPage() {
               </div>
 
               {/* Links */}
-              <div className="flex items-center space-x-8 text-sm">
-                <Link href="/sign-up" className="text-gray-300 hover:text-white font-medium transition-colors duration-200">
-                  Get Started
-                </Link>
-                <Link href="/sign-in" className="text-gray-300 hover:text-white font-medium transition-colors duration-200">
-                  Sign In
-                </Link>
+              <div className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-8 text-sm">
+                <div className="flex items-center space-x-6">
+                  <Link href="/sign-up" className="text-gray-300 hover:text-white font-medium transition-colors duration-200">
+                    Get Started
+                  </Link>
+                  <Link href="/sign-in" className="text-gray-300 hover:text-white font-medium transition-colors duration-200">
+                    Sign In
+                  </Link>
+                </div>
+                <div className="flex items-center space-x-6 text-xs">
+                  <Link href="/privacy" className="text-gray-400 hover:text-gray-200 transition-colors duration-200">
+                    Privacy Policy
+                  </Link>
+                  <Link href="/terms" className="text-gray-400 hover:text-gray-200 transition-colors duration-200">
+                    Terms of Service
+                  </Link>
+                </div>
               </div>
 
               {/* Copyright */}
