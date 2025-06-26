@@ -65,10 +65,12 @@ export function TemplateManagementControls({
         <Button 
           onClick={onNewTemplate}
           className="w-full"
+          loading={isCreating}
+          loadingText="Creating..."
           disabled={isLoading}
         >
           <Plus className="w-4 h-4 mr-2" />
-          {isCreating ? 'Creating...' : 'New template'}
+          New template
         </Button>
 
         <div className="flex gap-2">
@@ -88,10 +90,12 @@ export function TemplateManagementControls({
             variant="outline"
             size="sm"
             className="flex-1 text-red-600 dark:text-red-400 border-red-200 dark:border-red-800 hover:bg-red-50 dark:hover:bg-red-900/20"
+            loading={isDeleting}
+            loadingText="Deleting..."
             disabled={!selectedTemplateId || isLoading}
           >
             <Trash2 className="w-4 h-4 mr-2" />
-            {isDeleting ? 'Deleting...' : 'Delete'}
+            Delete
           </Button>
         </div>
       </div>

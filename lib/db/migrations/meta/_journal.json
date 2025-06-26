@@ -64,6 +64,13 @@
       "when": 1750756098797,
       "tag": "0008_massive_thunderbolt",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1750968434126,
+      "tag": "0009_magical_bloodstorm",
+      "breakpoints": true
     }
   ]
 }

@@ -51,7 +51,6 @@ interface EmailRecipient {
 interface GmailConnection {
   id: string
   email: string
-  isActive: boolean
 }
 
 interface MailingSectionProps {
@@ -64,8 +63,7 @@ interface MailingSectionProps {
   gmailConnections: GmailConnection[]
   onConnectGmail: () => void
   onDisconnectGmail?: (email: string) => Promise<void>
-  onReconnectGmail?: (email: string) => Promise<void>
-  onRemoveGmail?: (email: string) => Promise<void>
+
   isLoading?: boolean
   isSending?: boolean
   onEmailDataChange?: (emailData: {
@@ -237,8 +235,7 @@ export function MailingSection({
   gmailConnections,
   onConnectGmail,
   onDisconnectGmail,
-  onReconnectGmail,
-  onRemoveGmail,
+
   isLoading = false,
   isSending = false,
   onEmailDataChange,
@@ -257,7 +254,7 @@ export function MailingSection({
   const [bccInput, setBccInput] = useState("")
 
   // Filter active connections for the From field
-  const activeConnections = gmailConnections.filter(conn => conn.isActive)
+  const activeConnections = gmailConnections
 
   // Set default from email when active connections are available
   React.useEffect(() => {
@@ -392,117 +389,60 @@ export function MailingSection({
                                 <div className="font-medium truncate">{connection.email}</div>
                                 <div className="flex items-center gap-2 mt-1">
                                   <Badge 
-                                    variant={connection.isActive ? "default" : "secondary"}
-                                    className={`text-xs ${
-                                      connection.isActive 
-                                        ? "bg-green-100 text-green-800 hover:bg-green-100 dark:bg-green-900/20 dark:text-green-400" 
-                                        : ""
-                                    }`}
+                                    variant="default"
+                                    className="text-xs bg-green-100 text-green-800 hover:bg-green-100 dark:bg-green-900/20 dark:text-green-400"
                                   >
-                                    {connection.isActive ? "Connected" : "Disconnected"}
+                                    Connected
                                   </Badge>
                                 </div>
                               </div>
                                                             
                               <div className="flex-shrink-0">
-                                {connection.isActive ? (
-                                  // Active connection - show disconnect option
-                                  onDisconnectGmail && (
-                                    <AlertDialog>
-                                      <DropdownMenu>
-                                        <DropdownMenuTrigger asChild>
-                                          <Button
-                                            variant="ghost"
-                                            size="sm"
-                                            className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground"
-                                          >
-                                            <MoreVertical className="w-4 h-4" />
-                                          </Button>
-                                        </DropdownMenuTrigger>
-                                        <DropdownMenuContent align="end">
-                                          <AlertDialogTrigger asChild>
-                                            <DropdownMenuItem className="text-red-600 dark:text-red-400 focus:text-red-600 dark:focus:text-red-400 focus:bg-red-50 dark:focus:bg-red-950/20 cursor-pointer">
-                                              <Unplug className="w-4 h-4 mr-2" />
-                                              Disconnect
-                                            </DropdownMenuItem>
-                                          </AlertDialogTrigger>
-                                        </DropdownMenuContent>
-                                      </DropdownMenu>
-                                      <AlertDialogContent>
-                                        <AlertDialogHeader>
-                                          <AlertDialogTitle className="flex items-center gap-2">
-                                            <AlertTriangle className="w-5 h-5 text-amber-500" />
-                                            Disconnect Gmail Account
-                                          </AlertDialogTitle>
-                                          <AlertDialogDescription>
-                                            Are you sure you want to disconnect <strong>{connection.email}</strong>? 
-                                            You'll need to reconnect this account to send emails from it.
-                                          </AlertDialogDescription>
-                                        </AlertDialogHeader>
-                                        <AlertDialogFooter>
-                                          <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                          <AlertDialogAction
-                                            onClick={() => onDisconnectGmail(connection.email)}
-                                            className="bg-red-600 text-white hover:bg-red-700 dark:bg-red-600 dark:hover:bg-red-500 dark:text-white"
-                                          >
-                                            <Unplug className="w-4 h-4 mr-2" />
-                                            Disconnect
-                                          </AlertDialogAction>
-                                        </AlertDialogFooter>
-                                      </AlertDialogContent>
-                                    </AlertDialog>
-                                  )
-                                ) : (
-                                  // Disconnected connection - show reconnect and remove options
-                                  <div className="flex gap-2">
-                                    {onReconnectGmail && (
+                                {onDisconnectGmail && (
+                                <AlertDialog>
+                                  <DropdownMenu>
+                                    <DropdownMenuTrigger asChild>
                                       <Button
-                                        onClick={() => onReconnectGmail(connection.email)}
-                                        variant="outline"
+                                        variant="ghost"
                                         size="sm"
-                                        className="h-8 px-3 text-xs bg-green-50 dark:bg-green-950/20 border-green-200 dark:border-green-800 text-green-700 dark:text-green-300 hover:bg-green-100 dark:hover:bg-green-900/30"
+                                        className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground"
                                       >
-                                        <Mail className="w-3 h-3 mr-1" />
-                                        Reconnect
+                                        <MoreVertical className="w-4 h-4" />
                                       </Button>
-                                    )}
-                                    {onRemoveGmail && (
-                                      <AlertDialog>
-                                        <AlertDialogTrigger asChild>
-                                          <Button
-                                            variant="outline"
-                                            size="sm"
-                                            className="h-8 w-8 p-0 text-red-600 dark:text-red-400 border-red-200 dark:border-red-800 hover:bg-red-50 dark:hover:bg-red-950/20"
-                                          >
-                                            <Trash2 className="w-3 h-3" />
-                                          </Button>
-                                        </AlertDialogTrigger>
-                                        <AlertDialogContent>
-                                          <AlertDialogHeader>
-                                            <AlertDialogTitle className="flex items-center gap-2">
-                                              <AlertTriangle className="w-5 h-5 text-amber-500" />
-                                              Remove Gmail Account
-                                            </AlertDialogTitle>
-                                            <AlertDialogDescription>
-                                              Are you sure you want to permanently remove <strong>{connection.email}</strong>? 
-                                              This will delete all connection data from the database and cannot be undone.
-                                            </AlertDialogDescription>
-                                          </AlertDialogHeader>
-                                          <AlertDialogFooter>
-                                            <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                            <AlertDialogAction
-                                              onClick={() => onRemoveGmail(connection.email)}
-                                              className="bg-red-600 text-white hover:bg-red-700 dark:bg-red-600 dark:hover:bg-red-500 dark:text-white"
-                                            >
-                                              <Trash2 className="w-4 h-4 mr-2" />
-                                              Remove Permanently
-                                            </AlertDialogAction>
-                                          </AlertDialogFooter>
-                                        </AlertDialogContent>
-                                      </AlertDialog>
-                                    )}
-                                  </div>
-                                )}
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent align="end">
+                                      <AlertDialogTrigger asChild>
+                                        <DropdownMenuItem className="text-red-600 dark:text-red-400 focus:text-red-600 dark:focus:text-red-400 focus:bg-red-50 dark:focus:bg-red-950/20 cursor-pointer">
+                                          <Unplug className="w-4 h-4 mr-2" />
+                                          Disconnect
+                                        </DropdownMenuItem>
+                                      </AlertDialogTrigger>
+                                    </DropdownMenuContent>
+                                  </DropdownMenu>
+                                  <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                      <AlertDialogTitle className="flex items-center gap-2">
+                                        <AlertTriangle className="w-5 h-5 text-amber-500" />
+                                        Disconnect Gmail Account
+                                      </AlertDialogTitle>
+                                      <AlertDialogDescription>
+                                        Are you sure you want to disconnect <strong>{connection.email}</strong>? 
+                                        This will permanently delete all tokens and connection data from our database.
+                                      </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                      <AlertDialogAction
+                                        onClick={() => onDisconnectGmail(connection.email)}
+                                        className="bg-red-600 text-white hover:bg-red-700 dark:bg-red-600 dark:hover:bg-red-500 dark:text-white"
+                                      >
+                                        <Unplug className="w-4 h-4 mr-2" />
+                                        Disconnect
+                                      </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                  </AlertDialogContent>
+                                </AlertDialog>
+                              )}
                               </div>
                             </div>
                           ))}

@@ -155,11 +155,13 @@ export default function SignInPage() {
             {/* Login with Email Button */}
             <Button
               type="submit"
-              disabled={isLoading.credentials || !email || !password}
+              loading={isLoading.credentials}
+              loadingText="Signing in..."
+              disabled={!email || !password}
               className="w-full h-14 bg-gray-900 hover:bg-gray-800 text-white rounded-xl text-base font-medium transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Mail className="w-5 h-5 mr-2" />
-              {isLoading.credentials ? "Signing in..." : "Login with email"}
+              Login with email
             </Button>
           </form>
 

@@ -101,7 +101,6 @@ export class GmailService {
             refreshToken: tokens.refresh_token,
             accessToken: tokens.access_token || null,
             expiresAt: tokens.expiry_date ? new Date(tokens.expiry_date) : null,
-            isActive: true,
             updatedAt: new Date(),
           })
           .where(eq(gmailConnections.id, existingConnection[0].id))
@@ -113,7 +112,6 @@ export class GmailService {
           refreshToken: tokens.refresh_token,
           accessToken: tokens.access_token || null,
           expiresAt: tokens.expiry_date ? new Date(tokens.expiry_date) : null,
-          isActive: true,
         })
       }
 
@@ -150,13 +148,12 @@ export class GmailService {
         .from(gmailConnections)
         .where(and(
           eq(gmailConnections.userId, userId),
-          eq(gmailConnections.email, fromEmail),
-          eq(gmailConnections.isActive, true)
+          eq(gmailConnections.email, fromEmail)
         ))
         .limit(1)
 
       if (connection.length === 0) {
-        return { success: false, error: 'Gmail connection not found or inactive.' }
+        return { success: false, error: 'Gmail connection not found.' }
       }
 
       const conn = connection[0]
@@ -317,16 +314,36 @@ export class GmailService {
   }
 
   /**
-   * Disconnect Gmail account
+   * Disconnect Gmail account and delete tokens
    */
   async disconnectAccount(userId: string, email: string): Promise<boolean> {
     try {
+      // First, get the connection ID we're about to delete
+      const connection = await db
+        .select({ id: gmailConnections.id })
+        .from(gmailConnections)
+        .where(and(
+          eq(gmailConnections.userId, userId),
+          eq(gmailConnections.email, email)
+        ))
+        .limit(1)
+
+      if (connection.length === 0) {
+        return false // Connection not found
+      }
+
+      const connectionId = connection[0].id
+
+      // Update email history records to set gmailConnectionId to NULL
+      // This preserves the email history but removes the reference to the deleted connection
       await db
-        .update(gmailConnections)
-        .set({
-          isActive: false,
-          updatedAt: new Date(),
-        })
+        .update(emailHistory)
+        .set({ gmailConnectionId: null })
+        .where(eq(emailHistory.gmailConnectionId, connectionId))
+
+      // Now we can safely delete the Gmail connection record
+      await db
+        .delete(gmailConnections)
         .where(and(
           eq(gmailConnections.userId, userId),
           eq(gmailConnections.email, email)

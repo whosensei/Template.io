@@ -134,7 +134,9 @@ export function AppSidebar({
                         size="sm"
                         variant="outline"
                         className="flex-1 border-red-200 dark:border-red-800 bg-red-50/80 dark:bg-red-950/50 text-red-600 dark:text-red-400 hover:bg-red-100/90 dark:hover:bg-red-900/60 hover:border-red-300 dark:hover:border-red-700 backdrop-blur-sm transition-all duration-200"
-                        disabled={!selectedTemplateId || isDeleting || isLoading}
+                        loading={isDeleting}
+                        loadingText="Deleting..."
+                        disabled={!selectedTemplateId || isLoading}
                       >
                         <Trash2 className="w-3 h-3 mr-1" />
                         Delete

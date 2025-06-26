@@ -20,7 +20,6 @@ import {
 interface GmailConnection {
   id: string
   email: string
-  isActive: boolean
   createdAt: string
 }
 
@@ -104,14 +103,10 @@ export function GmailConnectionsSettings({
                   <p className="text-sm font-medium">{connection.email}</p>
                   <div className="flex items-center gap-2 mt-1">
                     <Badge 
-                      variant={connection.isActive ? "default" : "secondary"}
-                      className={`text-xs ${
-                        connection.isActive 
-                          ? "bg-green-100 text-green-800 hover:bg-green-100 dark:bg-green-900/20 dark:text-green-400 dark:hover:bg-green-900/20" 
-                          : ""
-                      }`}
+                      variant="default"
+                      className="text-xs bg-green-100 text-green-800 hover:bg-green-100 dark:bg-green-900/20 dark:text-green-400 dark:hover:bg-green-900/20"
                     >
-                      {connection.isActive ? "Connected" : "Disconnected"}
+                      Connected
                     </Badge>
                     <span className="text-xs text-muted-foreground">
                       Since {new Date(connection.createdAt).toLocaleDateString()}
@@ -120,38 +115,36 @@ export function GmailConnectionsSettings({
                 </div>
               </div>
               
-              {connection.isActive && (
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      disabled={isDisconnecting === connection.email}
-                      className="text-muted-foreground hover:text-foreground hover:bg-muted"
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    disabled={isDisconnecting === connection.email}
+                    className="text-muted-foreground hover:text-foreground hover:bg-muted"
+                  >
+                    {isDisconnecting === connection.email ? "Disconnecting..." : "Disconnect"}
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Disconnect Gmail Account</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Are you sure you want to disconnect <strong>{connection.email}</strong>? 
+                      This will permanently delete all tokens and connection data from our database.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={() => handleDisconnect(connection.email)}
+                      className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                     >
                       {isDisconnecting === connection.email ? "Disconnecting..." : "Disconnect"}
-                    </Button>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>Disconnect Gmail Account</AlertDialogTitle>
-                      <AlertDialogDescription>
-                        Are you sure you want to disconnect <strong>{connection.email}</strong>? 
-                        You'll need to reconnect this account to send emails from it.
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel>Cancel</AlertDialogCancel>
-                      <AlertDialogAction
-                        onClick={() => handleDisconnect(connection.email)}
-                        className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                      >
-                        {isDisconnecting === connection.email ? "Disconnecting..." : "Disconnect"}
-                      </AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
-              )}
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             </div>
           ))}
           

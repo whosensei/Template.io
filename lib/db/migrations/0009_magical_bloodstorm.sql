@@ -1,0 +1,1 @@
+ALTER TABLE "gmail_connections" DROP COLUMN "is_active";

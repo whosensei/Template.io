@@ -207,8 +207,7 @@ export function TemplateEditorWithSidebar({
                       onSend={handleSendEmail}
                       gmailConnections={connections.map(conn => ({
                         id: conn.id,
-                        email: conn.email,
-                        isActive: conn.isActive
+                        email: conn.email
                       }))}
                       onConnectGmail={connectGmail}
                       onDisconnectGmail={disconnectGmail}

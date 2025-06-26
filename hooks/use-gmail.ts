@@ -4,7 +4,6 @@ import { toast } from 'sonner'
 interface GmailConnection {
   id: string
   email: string
-  isActive: boolean
 }
 
 interface EmailRecipient {

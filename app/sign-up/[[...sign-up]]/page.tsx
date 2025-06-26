@@ -189,11 +189,13 @@ export default function SignUpPage() {
                 {/* Create Account Button */}
                 <Button
                   type="submit"
-                  disabled={isLoading.credentials || !formData.email || !formData.password}
+                  loading={isLoading.credentials}
+                  loadingText="Creating account..."
+                  disabled={!formData.email || !formData.password}
                   className="w-full h-14 bg-gray-900 hover:bg-gray-800 text-white rounded-xl text-base font-medium transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <Mail className="w-5 h-5 mr-2" />
-                  {isLoading.credentials ? "Creating account..." : "Sign up with email"}
+                  Sign up with email
                 </Button>
               </form>
 

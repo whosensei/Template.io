@@ -1,6 +1,7 @@
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
 import { cva, type VariantProps } from "class-variance-authority"
+import { Loader2 } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 
@@ -37,17 +38,50 @@ export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean
+  /** Whether the button should show a loading spinner and be disabled */
+  loading?: boolean
+  /** Optional text to show when loading. If not provided, children will be shown */
+  loadingText?: string | React.ReactNode
 }
 
+/**
+ * Button component with built-in loading state support.
+ * 
+ * @example
+ * // Basic usage
+ * <Button>Click me</Button>
+ * 
+ * @example
+ * // With loading state
+ * <Button loading={isSubmitting} loadingText="Submitting...">
+ *   Submit
+ * </Button>
+ * 
+ * @example
+ * // Loading with custom text
+ * <Button loading={isSaving} loadingText="Saving...">
+ *   Save Changes
+ * </Button>
+ */
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, ...props }, ref) => {
+  ({ className, variant, size, asChild = false, loading = false, loadingText, children, disabled, ...props }, ref) => {
     const Comp = asChild ? Slot : "button"
+    
+    // When loading, the button should be disabled
+    const isDisabled = disabled || loading
+    
     return (
       <Comp
         className={cn(buttonVariants({ variant, size, className }))}
         ref={ref}
+        disabled={isDisabled}
         {...props}
-      />
+      >
+        {loading && (
+          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+        )}
+        {loading && loadingText ? loadingText : children}
+      </Comp>
     )
   }
 )

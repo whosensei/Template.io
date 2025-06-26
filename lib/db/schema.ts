@@ -17,7 +17,6 @@ export const gmailConnections = pgTable('gmail_connections', {
   refreshToken: text('refresh_token').notNull(),
   accessToken: text('access_token'),
   expiresAt: timestamp('expires_at'),
-  isActive: boolean('is_active').notNull().default(true),
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at').notNull().defaultNow(),
 }, (table) => {

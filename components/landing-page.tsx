@@ -1,5 +1,3 @@
-"use client"
-
 import { Button } from '@/components/ui/button'
 import { ArrowRight, Mail, Sparkles, Clock, Globe, Award, MousePointer } from 'lucide-react'
 import Link from 'next/link'
@@ -52,7 +50,7 @@ export function LandingPage() {
               </div>
               
               <p className="text-sm text-gray-500 font-medium">
-                No credit card required • Start creating templates in minutes
+                No credit card required • Start creating templates in seconds
               </p>
             </div>
 

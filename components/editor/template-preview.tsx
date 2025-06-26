@@ -281,7 +281,8 @@ export function TemplatePreview({
 
             <Button
               onClick={handleCopy}
-              disabled={isCopying}
+              loading={isCopying}
+              loadingText="Copying..."
               size="sm"
               variant="outline"
               className="text-xs sm:text-sm"
@@ -301,25 +302,17 @@ export function TemplatePreview({
             {onSend && (
               <Button
                 onClick={onSend}
-                disabled={isSending || !canSend}
+                loading={isSending}
+                loadingText={<><Send className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-2" /><span className="hidden sm:inline">Sending...</span><span className="sm:hidden">...</span></>}
+                disabled={!canSend}
                 size="sm"
                 variant="default"
                 className="text-xs sm:text-sm font-medium"
                 title={!canSend ? "Add recipients and connect Gmail to send" : ""}
               >
-                {isSending ? (
-                  <>
-                    <Send className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-2" />
-                    <span className="hidden sm:inline">Sending...</span>
-                    <span className="sm:hidden">...</span>
-                  </>
-                ) : (
-                  <>
-                    <Send className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-2" />
-                    <span className="hidden sm:inline">Send</span>
-                    <span className="sm:hidden">Send</span>
-                  </>
-                )}
+                <Send className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-2" />
+                <span className="hidden sm:inline">Send</span>
+                <span className="sm:hidden">Send</span>
               </Button>
             )}
           </div>
