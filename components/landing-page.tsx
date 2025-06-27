@@ -198,7 +198,7 @@ export function LandingPage() {
                   </Link>
                 </div>
                 <div className="flex items-center space-x-6 text-xs">
-                  <Link href="/privacy" className="text-gray-400 hover:text-gray-200 transition-colors duration-200">
+                  <Link href="/privacy-policy" className="text-gray-400 hover:text-gray-200 transition-colors duration-200">
                     Privacy Policy
                   </Link>
                   <Link href="/terms" className="text-gray-400 hover:text-gray-200 transition-colors duration-200">
