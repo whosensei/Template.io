@@ -6,7 +6,7 @@ const publicRoutes = [
   '/sign-up',
   '/api/auth',
   '/api/webhooks',
-  '/privacy',
+  '/privacy-policy',
   '/terms',
   '/_next',
   '/favicon.ico',

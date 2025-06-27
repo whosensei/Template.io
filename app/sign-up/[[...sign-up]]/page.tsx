@@ -297,7 +297,7 @@ export default function SignUpPage() {
                     Terms of Service
                   </Link>{" "}
                   and{" "}
-                  <Link href="/privacy" className="text-gray-900 font-medium hover:underline">
+                  <Link href="/privacy-policy" className="text-gray-900 font-medium hover:underline">
                     Privacy Policy
                   </Link>
                   .
