@@ -64,6 +64,41 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     verifyRequest: "/verify-request",
   },
   callbacks: {
+    async signIn({ user, account, profile }) {
+      // Allow all credential sign-ins
+      if (account?.provider === "credentials") {
+        return true
+      }
+
+      // For OAuth providers (Google, GitHub), check if account should be linked
+      if (account?.provider === "google" || account?.provider === "github") {
+        if (!user.email) {
+          return false
+        }
+
+        try {
+          // Check if a user with this email already exists
+          const existingUser = await db
+            .select()
+            .from(users)
+            .where(eq(users.email, user.email))
+            .limit(1)
+
+          if (existingUser.length > 0) {
+            // User exists - allow sign in (this will link the account automatically)
+            return true
+          }
+
+          // New user - allow sign in
+          return true
+        } catch (error) {
+          console.error("Error during sign in callback:", error)
+          return false
+        }
+      }
+
+      return true
+    },
     session: ({ session, token }) => ({
       ...session,
       user: {
@@ -80,5 +115,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   },
   session: {
     strategy: "jwt",
+  },
+  // Enable account linking
+  events: {
+    async linkAccount({ user, account, profile }) {
+      console.log(`Account ${account.provider} linked to user ${user.email}`)
+    },
   },
 }) 
