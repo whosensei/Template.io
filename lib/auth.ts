@@ -19,10 +19,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     Google({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      allowDangerousEmailAccountLinking: true,
     }),
     GitHub({
       clientId: process.env.GITHUB_CLIENT_ID!,
       clientSecret: process.env.GITHUB_CLIENT_SECRET!,
+      allowDangerousEmailAccountLinking: true,
     }),
     Credentials({
       name: "credentials",
@@ -65,38 +67,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   },
   callbacks: {
     async signIn({ user, account, profile }) {
-      // Allow all credential sign-ins
-      if (account?.provider === "credentials") {
-        return true
-      }
-
-      // For OAuth providers (Google, GitHub), check if account should be linked
-      if (account?.provider === "google" || account?.provider === "github") {
-        if (!user.email) {
-          return false
-        }
-
-        try {
-          // Check if a user with this email already exists
-          const existingUser = await db
-            .select()
-            .from(users)
-            .where(eq(users.email, user.email))
-            .limit(1)
-
-          if (existingUser.length > 0) {
-            // User exists - allow sign in (this will link the account automatically)
-            return true
-          }
-
-          // New user - allow sign in
-          return true
-        } catch (error) {
-          console.error("Error during sign in callback:", error)
-          return false
-        }
-      }
-
+      // Allow all sign-ins - account linking is handled automatically
+      // by allowDangerousEmailAccountLinking for OAuth providers
       return true
     },
     session: ({ session, token }) => ({
