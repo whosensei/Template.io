@@ -12,13 +12,6 @@ export interface Template {
   updatedAt?: string
 }
 
-// Client-side cache with TTL
-interface CacheEntry {
-  data: Template[]
-  timestamp: number
-  etag?: string
-}
-
 // Utility function to deduplicate templates by ID
 function deduplicateTemplates(templates: Template[]): Template[] {
   const seen = new Set<string>()
@@ -32,57 +25,6 @@ function deduplicateTemplates(templates: Template[]): Template[] {
   }
   
   return deduped
-}
-
-// Advanced cache manager
-class TemplateCache {
-  private static instance: TemplateCache
-  private cache: CacheEntry | null = null
-  private readonly TTL = 30000 // 30 seconds
-  private refreshPromise: Promise<Template[]> | null = null
-  
-  static getInstance() {
-    if (!TemplateCache.instance) {
-      TemplateCache.instance = new TemplateCache()
-    }
-    return TemplateCache.instance
-  }
-  
-  isValid(): boolean {
-    if (!this.cache) return false
-    return (Date.now() - this.cache.timestamp) < this.TTL
-  }
-  
-  get(): Template[] | null {
-    return this.isValid() ? this.cache!.data : null
-  }
-  
-  set(data: Template[], etag?: string) {
-    // Always deduplicate before caching
-    const dedupedData = deduplicateTemplates(data)
-    this.cache = {
-      data: dedupedData,
-      timestamp: Date.now(),
-      etag
-    }
-  }
-  
-  invalidate() {
-    this.cache = null
-    this.refreshPromise = null
-  }
-  
-  getEtag(): string | undefined {
-    return this.cache?.etag
-  }
-  
-  setRefreshPromise(promise: Promise<Template[]>) {
-    this.refreshPromise = promise
-  }
-  
-  getRefreshPromise(): Promise<Template[]> | null {
-    return this.refreshPromise
-  }
 }
 
 // Helper function to parse template content with subject
