@@ -103,7 +103,7 @@ export default function SignUpPage() {
         <div className="absolute inset-0 bg-black/30" />
         <div className="relative z-10 flex flex-col justify-end p-12 text-white">
           <div className="space-y-4">
-            <h1 className="text-4xl font-bold">Join Template.io today</h1>
+            <h1 className="text-4xl font-bold">Join Template today</h1>
             <p className="text-xl opacity-90">
               Start creating stunning email templates in minutes, not hours.
             </p>

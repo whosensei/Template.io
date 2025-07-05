@@ -83,7 +83,7 @@ export default function SignInPage() {
         <div className="absolute inset-0 bg-black/20" />
         <div className="relative z-10 flex flex-col justify-end p-12 text-white">
           <div className="space-y-4">
-            <h1 className="text-4xl font-bold">Welcome back to Template.io</h1>
+            <h1 className="text-4xl font-bold">Welcome back to Template</h1>
             <p className="text-xl opacity-90">
               Create beautiful email templates with ease and power.
             </p>
