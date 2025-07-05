@@ -165,7 +165,7 @@ export default function SignUpPage() {
                     value={formData.email}
                     onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
                     required
-                    className="h-14 text-base bg-white border-gray-200 rounded-xl px-4 placeholder:text-gray-400 focus:border-gray-800 focus:ring-gray-800"
+                    className="h-14 text-gray-900 bg-white border-gray-200 rounded-xl px-4 placeholder:text-gray-400 focus:border-gray-800 focus:ring-gray-800"
                   />
                 </div>
 
@@ -182,7 +182,7 @@ export default function SignUpPage() {
                     onChange={(e) => setFormData(prev => ({ ...prev, password: e.target.value }))}
                     required
                     minLength={6}
-                    className="h-14 text-base bg-white border-gray-200 rounded-xl px-4 placeholder:text-gray-400 focus:border-gray-800 focus:ring-gray-800"
+                    className="h-14 text-gray-900 bg-white border-gray-200 rounded-xl px-4 placeholder:text-gray-400 focus:border-gray-800 focus:ring-gray-800"
                   />
                 </div>
 
