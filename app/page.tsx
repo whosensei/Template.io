@@ -10,8 +10,8 @@ export default async function Home() {
   // Get session on the server side
   const session = await auth()
 
-  // Show landing page for unauthenticated users
-  if (!session) {
+  // Show landing page for unauthenticated users or if user id is missing
+  if (!session || !session.user?.id) {
     return <LandingPage />
   }
 
