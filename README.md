@@ -9,6 +9,8 @@ A Next.js application for managing email templates with persistent storage using
 - 📝 **Template Management**: Create, read, update, and delete email templates
 - 🎨 **Modern UI**: Built with Next.js, Tailwind CSS, and Radix UI
 - 🚀 **Serverless**: Powered by Neon's serverless PostgreSQL
+- 🎯 **User Onboarding**: Interactive welcome dialog for new users
+- 📧 **Gmail Integration**: Send emails directly through Gmail OAuth
 
 ## Database Setup
 

@@ -57,6 +57,7 @@ export const users = pgTable('users', {
   emailVerified: timestamp('emailVerified', { mode: 'date' }),
   image: text('image'),
   password: text('password'), // For credentials authentication
+  onboardingCompleted: boolean('onboarding_completed').default(false),
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at').notNull().defaultNow(),
 })

@@ -28,4 +28,8 @@ export { SettingsDialog } from './settings-dialog'
 export { SettingsSection } from './settings/settings-section'
 export { ThemeSettings } from './settings/theme-settings'
 export { GmailConnectionsSettings } from './settings/gmail-connections-settings'
-export { HighlightColorSettings } from './settings/highlight-color-settings' 
+export { HighlightColorSettings } from './settings/highlight-color-settings'
+
+// Welcome/Onboarding Components
+export { WelcomeDialog } from './welcome-dialog'
+export { WelcomeDialogWrapper } from './welcome-dialog-wrapper' 
