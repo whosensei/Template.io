@@ -311,7 +311,6 @@ export function TemplatePreview({
               >
                 {isSending ? (
                   <>
-                    <Send className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-2 animate-spin" />
                     <span className="hidden sm:inline">Sending...</span>
                     <span className="sm:hidden">...</span>
                   </>
