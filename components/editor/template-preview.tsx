@@ -303,16 +303,25 @@ export function TemplatePreview({
               <Button
                 onClick={onSend}
                 loading={isSending}
-                loadingText={<><Send className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-2" /><span className="hidden sm:inline">Sending...</span><span className="sm:hidden">...</span></>}
                 disabled={!canSend}
                 size="sm"
                 variant="default"
                 className="text-xs sm:text-sm font-medium"
                 title={!canSend ? "Add recipients and connect Gmail to send" : ""}
               >
-                <Send className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-2" />
-                <span className="hidden sm:inline">Send</span>
-                <span className="sm:hidden">Send</span>
+                {isSending ? (
+                  <>
+                    <Send className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-2 animate-spin" />
+                    <span className="hidden sm:inline">Sending...</span>
+                    <span className="sm:hidden">...</span>
+                  </>
+                ) : (
+                  <>
+                    <Send className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-2" />
+                    <span className="hidden sm:inline">Send</span>
+                    <span className="sm:hidden">Send</span>
+                  </>
+                )}
               </Button>
             )}
           </div>
