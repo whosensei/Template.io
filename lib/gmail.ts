@@ -39,26 +39,17 @@ export class GmailService {
     if (!CLIENT_ID || !CLIENT_SECRET || !REDIRECT_URI) {
       throw new Error('Gmail OAuth environment variables are not properly configured')
     }
-
-    console.log('OAuth Config:', {
-      clientId: CLIENT_ID ? 'Set' : 'Missing',
-      clientSecret: CLIENT_SECRET ? 'Set' : 'Missing',
-      redirectUri: REDIRECT_URI
-    })
-
+    // No more logging of OAuth config or URLs
     const scopes = [
       'https://www.googleapis.com/auth/gmail.send',
       'https://www.googleapis.com/auth/userinfo.email',
     ]
-
     const authUrl = this.oauth2Client.generateAuthUrl({
       access_type: 'offline',
       scope: scopes,
       state: userId, // Pass userId in state to identify user after callback
       prompt: 'consent' // Force consent to get refresh token
     })
-
-    console.log('Generated auth URL:', authUrl)
     return authUrl
   }
 

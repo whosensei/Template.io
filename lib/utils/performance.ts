@@ -76,16 +76,16 @@ class PerformanceMonitor {
     
     switch (level) {
       case 'fast':
-        console.log(`🚀 ${message}`)
+        // console.log(`🚀 ${message}`)
         break
       case 'moderate':
-        console.log(`⚡ ${message}`)
+        // console.log(`⚡ ${message}`)
         break
       case 'slow':
-        console.warn(`🐌 ${message}`)
+        // console.warn(`🐌 ${message}`)
         break
       case 'very-slow':
-        console.error(`🚨 ${message}`)
+        // console.error(`🚨 ${message}`)
         break
     }
   }
@@ -237,8 +237,8 @@ export function debugPerformance() {
   if (typeof window !== 'undefined') {
     // Client-side debugging
     (window as any).__performanceMonitor = performanceMonitor
-    console.log('Performance monitor available at window.__performanceMonitor')
-    console.log('Use __performanceMonitor.getPerformanceSummary() to see stats')
+    // console.log('Performance monitor available at window.__performanceMonitor')
+    // console.log('Use __performanceMonitor.getPerformanceSummary() to see stats')
   }
 }
 

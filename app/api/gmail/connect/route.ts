@@ -12,9 +12,8 @@ export async function POST(request: NextRequest) {
     
     const userId = session.user.id
 
-    console.log('Creating Gmail auth URL for user:', userId)
+    // All logging of sensitive info removed
     const authUrl = gmailService.getAuthUrl(userId)
-    console.log('Auth URL created successfully')
     
     return NextResponse.json({ authUrl })
   } catch (error) {

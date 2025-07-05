@@ -5,7 +5,7 @@ import { replaceVariables } from "@/lib/utils/template";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Copy, Check, Edit, Save, X, Send, Eye } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, sanitizeHtml } from "@/lib/utils";
 import { Textarea } from "@/components/ui/textarea";
 
 interface TemplatePreviewProps {
@@ -144,10 +144,15 @@ export function TemplatePreview({
       .replace(/\*(.*?)\*/g, "<em style='font-style: italic;'>$1</em>")
       // Replace underline
       .replace(/<u>(.*?)<\/u>/g, "<span style='text-decoration: underline;'>$1</span>")
-      // Replace hyperlinks [text](url)
+      // Replace hyperlinks [text](url) - with URL validation
       .replace(
         /\[([^\]]*)\]\(([^)]*)\)/g,
-        '<a href="$2" class="text-blue-600 dark:text-blue-400 underline hover:text-blue-800 dark:hover:text-blue-300" target="_blank" rel="noopener noreferrer">$1</a>'
+        (match, text, url) => {
+          if (url.match(/^https?:\/\//) || url.match(/^mailto:/)) {
+            return `<a href="${url}" class="text-blue-600 dark:text-blue-400 underline hover:text-blue-800 dark:hover:text-blue-300" target="_blank" rel="noopener noreferrer">${text}</a>`;
+          }
+          return `${text} (${url})`;
+        }
       )
       // Replace h1
       .replace(
@@ -229,7 +234,8 @@ export function TemplatePreview({
       `<span class="${getHighlightClasses()} px-2 py-1 rounded font-medium">{{$1}}</span>`
     );
 
-    return result;
+    // Sanitize the HTML to prevent XSS attacks
+    return sanitizeHtml(result);
   };
 
   const canEdit = !!(onTemplateChange || onSubjectChange);

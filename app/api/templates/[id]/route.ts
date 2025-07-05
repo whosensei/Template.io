@@ -5,7 +5,7 @@ import { TemplateService } from '@/lib/db/templates'
 // Performance monitoring
 function logPerformance(operation: string, startTime: number) {
   const duration = Date.now() - startTime
-  console.log(`${operation} completed in ${duration}ms`)
+  // console.log(`${operation} completed in ${duration}ms`)
   return duration
 }
 

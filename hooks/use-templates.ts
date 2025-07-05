@@ -48,7 +48,7 @@ const usePerformanceMonitor = () => {
     if (duration > 1000) {
       console.warn(`Slow operation detected: ${operation} took ${duration}ms`)
     } else {
-      console.log(`${operation} completed in ${duration}ms`)
+      // console.log(`${operation} completed in ${duration}ms`)
     }
   }, [])
   

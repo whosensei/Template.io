@@ -8,12 +8,7 @@ export async function GET(request: NextRequest) {
     const state = searchParams.get('state') // This contains the userId
     const error = searchParams.get('error')
 
-    console.log('Gmail callback received:', { 
-      hasCode: !!code, 
-      hasState: !!state, 
-      error,
-      fullUrl: request.url 
-    })
+    // All logging of sensitive callback info removed
 
     if (error) {
       console.error('OAuth error from Google:', error)
@@ -29,7 +24,6 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    console.log('Processing Gmail callback with code and state')
     const result = await gmailService.handleCallback(code, state)
 
     if (!result.success) {
@@ -39,7 +33,6 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    console.log('Gmail connection successful for:', result.email)
     return NextResponse.redirect(
       new URL(`/?gmail_connected=${encodeURIComponent(result.email || 'Unknown')}`, request.url)
     )

@@ -28,7 +28,7 @@ async function warmUpConnection() {
     // Warm up with a simple query
     await cachedDb.execute('SELECT 1' as any)
     
-    console.log('Database connection warmed up successfully')
+    // console.log('Database connection warmed up successfully')
     return cachedDb
   } catch (error) {
     console.error('Failed to warm up database connection:', error)

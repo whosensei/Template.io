@@ -19,7 +19,7 @@ function logDbOperation(operation: string, startTime: number) {
   if (duration > 500) {
     console.warn(`Slow DB operation: ${operation} took ${duration}ms`)
   } else {
-    console.log(`DB ${operation} completed in ${duration}ms`)
+    // console.log(`DB ${operation} completed in ${duration}ms`)
   }
 }
 
@@ -67,7 +67,7 @@ export class TemplateService {
   static async getAllTemplates(userId: string): Promise<Template[]> {
     const startTime = Date.now()
     
-    console.log('[TemplateService.getAllTemplates] Querying for userId:', userId)
+    // console.log('[TemplateService.getAllTemplates] Querying for userId:', userId)
     
     return retryOperation(async () => {
       try {
@@ -94,7 +94,7 @@ export class TemplateService {
           .orderBy(templates.updatedAt) // Order by updated time for better UX
           .limit(50) // Reasonable limit to prevent huge responses
         
-        console.log('[TemplateService.getAllTemplates] Found', result.length, 'templates for userId:', userId)
+        // console.log('[TemplateService.getAllTemplates] Found', result.length, 'templates for userId:', userId)
         
         // Convert timestamps to ISO strings
         const formattedResult = result.map(template => ({

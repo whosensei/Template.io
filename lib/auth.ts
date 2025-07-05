@@ -91,7 +91,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   // Enable account linking
   events: {
     async linkAccount({ user, account, profile }) {
-      console.log(`Account ${account.provider} linked to user ${user.email}`)
+      // console.log(`Account ${account.provider} linked to user ${user.email}`)
     },
   },
 }) 
