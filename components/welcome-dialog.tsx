@@ -17,24 +17,24 @@ export function WelcomeDialog({ isOpen, onClose, onComplete }: WelcomeDialogProp
 
   const steps = [
     {
-      title: "Welcome to Template.io",
+      title: "Welcome to Template",
       subtitle: "Your professional email template manager",
       content: (
         <div className="text-center space-y-6">
-          <div className="w-20 h-20 bg-gradient-to-br from-gray-900 to-black rounded-2xl shadow-lg mx-auto flex items-center justify-center">
+          <div className="w-20 h-20 bg-card rounded-2xl shadow-lg mx-auto flex items-center justify-center">
             <img 
               src="/Email Template App Logo Jun 24 2025 (2).png" 
-              alt="Template.io" 
+              alt="Template" 
               className="w-12 h-12 object-contain"
             />
           </div>
           <div className="space-y-4">
-            <h3 className="text-xl font-semibold text-gray-900">
+            <h3 className="text-xl font-semibold text-card-foreground">
               Create stunning email templates in minutes
             </h3>
-            <p className="text-gray-600 leading-relaxed">
+            <p className="text-muted-foreground leading-relaxed">
               Whether you're applying for jobs, reaching out to clients, or managing business communications, 
-              Template.io makes it easy to create professional emails with dynamic variables.
+              Template makes it easy to create professional emails with dynamic variables.
             </p>
           </div>
         </div>
@@ -46,57 +46,57 @@ export function WelcomeDialog({ isOpen, onClose, onComplete }: WelcomeDialogProp
       content: (
         <div className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Card className="border border-gray-200 shadow-sm">
+            <Card>
               <CardContent className="p-4">
                 <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-                    <FileText className="w-4 h-4 text-blue-600" />
+                  <div className="w-8 h-8 bg-muted rounded-lg flex items-center justify-center">
+                    <FileText className="w-4 h-4 text-primary" />
                   </div>
                   <div>
-                    <h4 className="font-medium text-gray-900">Template Editor</h4>
-                    <p className="text-sm text-gray-600">Create and customize email templates</p>
+                    <h4 className="font-medium text-card-foreground">Template Editor</h4>
+                    <p className="text-sm text-muted-foreground">Create and customize email templates</p>
                   </div>
                 </div>
               </CardContent>
             </Card>
             
-            <Card className="border border-gray-200 shadow-sm">
+            <Card>
               <CardContent className="p-4">
                 <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
-                    <Users className="w-4 h-4 text-green-600" />
+                  <div className="w-8 h-8 bg-muted rounded-lg flex items-center justify-center">
+                    <Users className="w-4 h-4 text-primary" />
                   </div>
                   <div>
-                    <h4 className="font-medium text-gray-900">Dynamic Variables</h4>
-                    <p className="text-sm text-gray-600">Personalize emails with custom variables</p>
+                    <h4 className="font-medium text-card-foreground">Dynamic Variables</h4>
+                    <p className="text-sm text-muted-foreground">Personalize emails with custom variables</p>
                   </div>
                 </div>
               </CardContent>
             </Card>
             
-            <Card className="border border-gray-200 shadow-sm">
+            <Card>
               <CardContent className="p-4">
                 <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
-                    <Mail className="w-4 h-4 text-purple-600" />
+                  <div className="w-8 h-8 bg-muted rounded-lg flex items-center justify-center">
+                    <Mail className="w-4 h-4 text-primary" />
                   </div>
                   <div>
-                    <h4 className="font-medium text-gray-900">Gmail Integration</h4>
-                    <p className="text-sm text-gray-600">Send emails directly through Gmail</p>
+                    <h4 className="font-medium text-card-foreground">Gmail Integration</h4>
+                    <p className="text-sm text-muted-foreground">Send emails directly through Gmail</p>
                   </div>
                 </div>
               </CardContent>
             </Card>
             
-            <Card className="border border-gray-200 shadow-sm">
+            <Card>
               <CardContent className="p-4">
                 <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center">
-                    <Send className="w-4 h-4 text-orange-600" />
+                  <div className="w-8 h-8 bg-muted rounded-lg flex items-center justify-center">
+                    <Send className="w-4 h-4 text-primary" />
                   </div>
                   <div>
-                    <h4 className="font-medium text-gray-900">Live Preview</h4>
-                    <p className="text-sm text-gray-600">See how your emails look before sending</p>
+                    <h4 className="font-medium text-card-foreground">Live Preview</h4>
+                    <p className="text-sm text-muted-foreground">See how your emails look before sending</p>
                   </div>
                 </div>
               </CardContent>
@@ -112,49 +112,49 @@ export function WelcomeDialog({ isOpen, onClose, onComplete }: WelcomeDialogProp
         <div className="space-y-6">
           <div className="space-y-4">
             <div className="flex items-start space-x-4">
-              <div className="w-8 h-8 bg-gray-900 text-white rounded-full flex items-center justify-center text-sm font-medium">
+              <div className="w-8 h-8 bg-primary text-primary-foreground rounded-full aspect-square flex items-center justify-center text-sm font-medium">
                 1
               </div>
               <div>
-                <h4 className="font-medium text-gray-900">Create Your Templates</h4>
-                <p className="text-sm text-gray-600">
+                <h4 className="font-medium text-card-foreground">Create Your Templates</h4>
+                <p className="text-sm text-muted-foreground">
                   Use our editor to create professional email templates with dynamic variables like {'{{companyName}}'} and {'{{jobRole}}'}.
                 </p>
               </div>
             </div>
             
             <div className="flex items-start space-x-4">
-              <div className="w-8 h-8 bg-gray-900 text-white rounded-full flex items-center justify-center text-sm font-medium">
+              <div className="w-8 h-8 bg-primary text-primary-foreground rounded-full aspect-square flex items-center justify-center text-sm font-medium">
                 2
               </div>
               <div>
-                <h4 className="font-medium text-gray-900">Fill in Variables</h4>
-                <p className="text-sm text-gray-600">
+                <h4 className="font-medium text-card-foreground">Fill in Variables</h4>
+                <p className="text-sm text-muted-foreground">
                   Enter specific values for each variable to personalize your emails for different recipients.
                 </p>
               </div>
             </div>
             
             <div className="flex items-start space-x-4">
-              <div className="w-8 h-8 bg-gray-900 text-white rounded-full flex items-center justify-center text-sm font-medium">
+              <div className="w-8 h-8 bg-primary text-primary-foreground rounded-full aspect-square flex items-center justify-center text-sm font-medium">
                 3
               </div>
               <div>
-                <h4 className="font-medium text-gray-900">Connect Gmail & Send</h4>
-                <p className="text-sm text-gray-600">
-                  Connect your Gmail account and send professional emails directly from Template.io.
+                <h4 className="font-medium text-card-foreground">Connect Gmail & Send</h4>
+                <p className="text-sm text-muted-foreground">
+                  Connect your Gmail account and send professional emails directly from Template.
                 </p>
               </div>
             </div>
           </div>
           
-          <div className="bg-gray-50 p-4 rounded-xl">
+          <div className="bg-muted p-4 rounded-xl">
             <div className="flex items-center space-x-2">
-              <Check className="w-5 h-5 text-green-600" />
-              <span className="text-sm font-medium text-gray-900">Pro Tip:</span>
+              <Check className="w-5 h-5 text-primary" />
+              <span className="text-sm font-medium text-card-foreground">Pro Tip:</span>
             </div>
-            <p className="text-sm text-gray-600 mt-1">
-              Start with our default job application template and customize it for your needs!
+            <p className="text-sm text-muted-foreground mt-1">
+              Add double curly braces around any word to turn it into a dynamic variable.
             </p>
           </div>
         </div>
@@ -184,10 +184,10 @@ export function WelcomeDialog({ isOpen, onClose, onComplete }: WelcomeDialogProp
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-hidden">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-semibold text-gray-900">
+          <DialogTitle className="text-2xl font-semibold text-foreground">
             {steps[currentStep].title}
           </DialogTitle>
-          <p className="text-gray-600">
+          <p className="text-muted-foreground">
             {steps[currentStep].subtitle}
           </p>
         </DialogHeader>
@@ -203,7 +203,7 @@ export function WelcomeDialog({ isOpen, onClose, onComplete }: WelcomeDialogProp
               <div
                 key={index}
                 className={`w-2 h-2 rounded-full transition-colors ${
-                  index === currentStep ? 'bg-gray-900' : 'bg-gray-300'
+                  index === currentStep ? 'bg-primary' : 'bg-muted-foreground'
                 }`}
               />
             ))}
@@ -215,7 +215,7 @@ export function WelcomeDialog({ isOpen, onClose, onComplete }: WelcomeDialogProp
           <Button
             variant="ghost"
             onClick={handleSkip}
-            className="text-gray-500 hover:text-gray-700"
+            className="text-muted-foreground hover:text-foreground"
           >
             Skip tour
           </Button>
@@ -233,7 +233,7 @@ export function WelcomeDialog({ isOpen, onClose, onComplete }: WelcomeDialogProp
             
             <Button
               onClick={handleNext}
-              className="px-6 py-2 bg-gray-900 hover:bg-gray-800 text-white"
+              className="px-6 py-2"
             >
               {currentStep === steps.length - 1 ? (
                 <>
